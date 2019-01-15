@@ -1,0 +1,12 @@
+.panel-panel.header{
+  width: 100%;
+}
+
+@media(max-width: 1400px) and (min-width: 769px) {
+	.not-front.panel-layout-header-main #main-wrapper .content-indent {
+		width: 100%;
+	    min-width: 100%;
+		margin: 0 auto;
+		overflow: auto;
+	}
+}

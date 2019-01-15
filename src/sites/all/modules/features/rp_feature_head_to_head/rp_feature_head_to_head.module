@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Rp - Feature Head To Head feature.
+ */
+
+include_once 'rp_feature_head_to_head.features.inc';

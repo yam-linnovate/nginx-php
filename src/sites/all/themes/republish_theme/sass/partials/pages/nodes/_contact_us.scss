@@ -1,0 +1,460 @@
+@include large() {
+  .page-contact-us {
+    #main-wrapper {
+      #main {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 45px;
+        .panel-panel .panel-pane:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+    .main-right {
+      width: calc(34% - 15px);
+      .inside,
+      .panels-ipe-region,
+      .panels-ipe-sort-container,
+      .panels-ipe-portlet-marker,
+      .panels-ipe-portlet-content,
+      .pane-contact-us {
+        box-sizing: border-box;
+        height: 100%;
+      }
+    }
+    .main-left {
+      width: calc(66% - 15px);
+    }
+    .pane-title-lecturer {
+      margin-bottom: 60px;
+      .img-background {
+        background-repeat: no-repeat;
+        background-size: cover;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 360px;
+        h2 {
+           @include font_family_bold;
+          font-size: 72px;
+          line-height: 1;
+          margin: 19px 0 ;
+          text-align: center;
+        }
+        .description {
+          @include font_family_regular;
+          font-size: 16px;
+          margin: 0 auto;
+          text-align: center;
+          width: 50%;
+        }
+      }
+    }
+
+    .pane-contact-us {
+      border: 1px solid $light-green;
+      color: #555f6e;
+      @include font_family_regular;
+      font-size: 18px;
+      padding: 23px 35px 70px 35px;
+      h2 {
+        color: $black;
+        font-size: 18px;
+        font-weight: normal;
+        margin-bottom: 52px;
+        padding-right: 95px;
+        position: relative;
+        p {
+          @include font_family_regular;
+          line-height: 1;
+          margin: 0;
+        }
+        p:last-child {
+          color: $green;
+          float: right;
+          font-size: 72px;
+          height: 45px;
+          line-height: 1;
+          margin: 0;
+          position: absolute;
+          right: 0;
+          top: -22px;
+        }
+      }
+      .main-content {
+        .icon {
+          margin: 13px 0 13px 30px;
+          height: 70px;
+          width: 70px;
+        }
+        .field {
+          p {
+            line-height: 1.2;
+            margin: 0;
+          }
+        }
+      }
+    }
+
+    .contact_us_webform {
+      @include font_family_regular;
+      padding: 39px 34px 34px 34px;
+      .webform-client-form {
+        .left {
+          float: left;
+          margin-top: 74px;
+          width: 50%;
+        }
+        .right {
+          float: right;
+          width: 50%;
+        }
+        .webform-component--title-area {
+          color: $black;
+          font-size: 18px;
+          font-weight: normal;
+          margin-bottom: 61px;
+          padding-right: 106px;
+          position: relative;
+          p {
+            @include font_family_regular;
+            line-height: 1;
+            margin: 0;
+          }
+          p:last-child {
+            color: $green;
+            float: right;
+            font-size: 72px;
+            height: 45px;
+            line-height: 1;
+            margin: 0;
+            position: absolute;
+            right: 0;
+            top: -22px;
+          }
+        }
+        .webform-component--msg {
+          margin-bottom: 24px;
+        }
+        .webform-component--telephone {
+          margin-right: 25px;
+        }
+        .webform-component--company {
+          margin-right: 25px;
+        }
+        .webform-component--full-msg {
+          font-size: 16px;
+        }
+        .scrollableList {
+          width: 100%;
+        }
+      }
+      .form-item {
+        margin: 0;
+      }
+      input {
+        background-color: #f0f3f3;
+        border: 1px solid $light-green;
+        border-radius: 5px;
+        @include font_family_regular;
+        font-size: 16px;
+        height: 46px;
+        margin: 0 0 24px 0;
+        padding: 0 17px;
+        width: 100%;
+      }
+      textarea {
+        background-color: #f0f3f3;
+        border: 1px solid $light-green;
+        border-radius: 5px;
+        font-size: 16px;
+        height: 140px;
+        padding: 15px 17px;
+      }
+      .form-actions {
+        margin-bottom: 0;
+      }
+      input[type='submit'] {
+        @include button-border($background: $green, $background_hover: #ffffff);
+        color: white;
+        @include font_family_regular;
+        height: 45px;
+        margin-bottom: 2px;
+        text-shadow: none;
+        width: 200px;
+        &:hover {
+          color: $green;
+          text-shadow: 1px 1px 3px white;
+        }
+      }
+    }
+
+    .footer {
+      background-color: white;
+      padding-top: 33px;
+    }
+  }
+}
+
+@include small() {
+  .page-contact-us {
+    .pane-title-lecturer {
+      h2 {
+        color: white;
+        @include font_family_bold;
+        font-size: 26px;
+        margin: 0;
+        text-align: center;
+      }
+      .img-background {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 188px;
+      }
+    }
+    .pane-contact-us {
+      background-color: white;
+      border: 1px solid $light-green;
+      color: #555f6e;
+      @include font_family_regular;
+      font-size: 18px;
+      margin: 17px 13px 0 13px;
+      padding: 20px 20px 70px 20px;
+      h2 {
+        color: $black;
+        font-size: 18px;
+        font-weight: normal;
+        margin-bottom: 20px;
+        margin-top: 9px;
+        padding-right: 84px;
+        position: relative;
+        p {
+          @include font_family_regular;
+          line-height: 16px;
+          margin: 0;
+        }
+        p:last-child {
+          color: $green;
+          float: right;
+          font-size: 60px;
+          height: 45px;
+          line-height: 1;
+          margin: 0;
+          position: absolute;
+          right: 0;
+          top: -17px;
+        }
+      }
+      .main-content {
+        .icon {
+          background-size: 50%;
+          margin: 7px 0 7px 20px;
+          height: 55px;
+          min-width: 55px;
+          width: 55px;
+        }
+        .call {
+          color: $green;
+          text-decoration: underline;
+        }
+        .field {
+          p {
+            font-size: 16px;
+            line-height: 1.2;
+            margin: 0;
+          }
+        }
+      }
+    }
+    .contact_us_webform {
+      background-color: white;
+      border: 1px solid $light_green;
+      color: $black;
+      margin: 15px 13px 28px 13px;
+      padding: 17px 16px 10px 16px;
+      text-align: center;
+      &>h2 {
+        display: none;
+      }
+      form {
+        & > div {
+          display: flex;
+          flex-direction: column;
+          .top {
+            order: 1;
+          }
+          .right {
+            order: 2;
+          }
+          .left {
+            order: 3;
+          }
+          .bottom {
+            order: 4;
+          }
+          .form-actions {
+            order: 5;
+          }
+        }
+      }
+      .webform-component--title-area {
+        color: $black;
+        font-size: 18px;
+        font-weight: normal;
+        margin-bottom: 30px;
+        margin-top: 9px;
+        padding-right: 84px;
+        position: relative;
+        text-align: right;
+        p {
+          @include font_family_regular;
+          line-height: 16px;
+          margin: 0;
+        }
+        p:last-child {
+          color: $green;
+          float: right;
+          font-size: 60px;
+          height: 45px;
+          line-height: 1;
+          margin: 0;
+          position: absolute;
+          right: 0;
+          top: -17px;
+        }
+      }
+      .webform-component--title {
+        margin: 0 0 10px 0;
+        h2 {
+          margin: 5px 0 0 0;
+          font-size: 28px;
+        }
+        img {
+          height: auto !important;
+          width: 36px !important;
+        }
+        p {
+          font-size: 18px;
+          line-height: 1.2;
+          margin: 0;
+          padding: 0 20px;
+        }
+      }
+      .webform-component--full-name {
+        margin: 0;
+      }
+      .webform-component--email {
+        margin: 0;
+      }
+      input {
+        background-color: #f0f3f3;
+        border: 1px solid $light_green;
+        border-radius: 5px;
+        box-shadow: none;
+        display: block;
+        font-size: 16px;
+        height: auto;
+        line-height: 36px;
+        margin: 0 0 7px 0;
+        padding: 0 15px;
+        width: 100%;
+      }
+      .webform-component--full-msg {
+        margin-bottom: 30px;
+        margin-top: 0;
+      }
+      textarea {
+        background-color: #f0f3f3;
+        border: 1px solid $light_green;
+        border-radius: 5px;
+        font-size: 16px;
+        height: 170px;
+        padding: 8px 15px;
+      }
+      .scrollableList {
+        background-color: #f0f3f3;
+        border: 1px solid $light-green;
+        border-radius: 5px;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0 17px;
+        position: relative;
+        text-align: right;
+        width: 100%;
+        &:before {
+          color: #555f6e;
+          content: '\e800';
+          font-family: "fontello";
+          position: absolute;
+          left: 10px;
+          top: 9px;
+        }
+      }
+      .scrollableList ul {
+        padding: 3px 0px 3px 0px;
+        margin: 0;
+        margin-left: -5px;
+        position: absolute;
+        width: 208px;
+        background-color: #f0f3f3;
+        margin-top: 5px;
+        border: 1px solid #DEDEDE;
+        box-sizing: border-box;
+        padding-right: 17px;
+        right: 0;
+        width: 100%;
+      }
+      .scrollableList ul li {
+        list-style:none;
+        cursor:pointer;
+        margin-left: 14px;
+        line-height: 25px;
+        color: #555f6e;
+        @include font_family_regular;
+        font-size: 16px;
+      }
+      .selectedOption {
+        color: #555f6e;
+        font-family: 'Open Sans', sans-serif;
+        @include font_family_regular;
+        font-size: 16px;
+        height: 36px;
+        line-height: 36px;
+        margin-left: 10px;
+        margin-top: 2px;
+        cursor:pointer;
+      }
+      .scrollableList ul li:hover {
+        color:#c33;
+      }
+      .selectedOption:hover {
+        color:#333;
+      }
+      .form-actions {
+        margin: 12px 0 0 0;
+        input[type='submit']{
+          @include button-border();
+          background-color: $green;
+          color: white;
+          @include font_family_regular;
+          height: auto;
+          line-height: 36px;
+          margin-top: 0;
+          padding: 0 0 2px 0;
+          text-shadow: none;
+          &:hover {
+            text-shadow: none;
+          }
+        }
+      }
+    }
+    .footer {
+      background-color: white;
+      float: left;
+      padding-top: 20px;
+      width: 100%;
+    }
+  }
+}

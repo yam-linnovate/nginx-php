@@ -1,0 +1,279 @@
+<?php
+
+function rp_ws_services_resources() {
+  $resources = array();
+  module_load_include('inc', 'rp_ws', 'includes/rp_ws.services');
+  $resources += rp_ws_services_resource();
+  return $resources;
+}
+
+
+function _field_data_image($field){
+    $field_arr = array();
+    if ($field){
+        foreach ($field as $key => $value) {
+            if (isset($value)){
+                $url = file_create_url($value['uri']);
+                $field_arr = ['field' => $url, 'filename' => $value['filename']];
+            }
+        }
+    }
+	return $field_arr;
+}
+
+function _field_data_taxonomy($field){
+	if ($field){
+        foreach ($field as $key => $value) {
+            $term = taxonomy_term_load($value['tid']);
+            $data = _fields_data($term, 'taxonomy_term');
+            //$field[$key]['full_term'] = $term;
+        }
+        //$arr_field = json_decode(json_encode($field), true);
+        return $data;
+    }
+}
+
+function _field_data_entity($field){
+	$data = array();
+	if ($field){
+        foreach ($field as $key => $value) {
+            $node = node_load($value['target_id']);
+            $node = _fields_data($node, 'node');
+            $data[] = $node;
+        }
+    }
+	//$arr = json_decode(json_encode($data), true);
+	return $data;
+
+}
+
+function _field_data_field_collection($field){
+	$data = array();
+    if (is_array($field) || is_object($field)){
+        foreach ($field as $key => $value) {
+            $field_collection = field_collection_item_load($value['value']);
+            $field_collection = _fields_data($field_collection, 'field_collection_item');
+            $data[] = $field_collection;
+        }
+    }
+    $arr = json_decode(json_encode($data), true);
+	return $data;
+}
+
+
+function _fields_data($obj, $bundle){
+    $objClone = false;
+    if (is_object($obj)){
+        $objClone = clone $obj;
+        foreach ($obj as $field_name => $field_value) {
+            $field_info = field_info_field($field_name);
+            if ($field_info ){
+                switch($field_info['type']){
+                    case 'image':
+                        $field_data = _field_data_image(field_get_items($bundle, $objClone, $field_name));
+                        $objClone->$field_name = $field_data;
+                        break;
+                    case 'taxonomy_term_reference':
+                        $field_data = _field_data_taxonomy(field_get_items($bundle, $objClone, $field_name));
+                        $objClone->$field_name = $field_data;
+                        break;
+                    case 'entityreference':
+                        $field_data = _field_data_entity(field_get_items($bundle, $objClone, $field_name));
+                        $objClone->$field_name = $field_data;
+                        break;
+                    case 'field_collection':
+                        $field_data = _field_data_field_collection(field_get_items($bundle, $objClone, $field_name));
+                        $objClone->$field_name = $field_data;
+                        break;
+                }
+            }
+        }
+    }
+    //$arr = json_decode(json_encode($obj), true);
+	return $objClone;
+}
+
+
+/**
+ * Implements hook_services_request_postprocess_alter().
+ */
+function rp_ws_services_request_postprocess_alter($controller, $args, &$result){
+    global $base_url;
+    $data = '';
+    if ( ! isset($args[1])) {
+        $args[1] = null;
+    }
+    if($args[1] == 'node') {
+        if($args[0] == 'retrieve'){
+
+            if (isset($result->nid)) {
+
+                $obj = _fields_data($result, 'node');
+                $data = (array)$obj;
+                $nid = $result->nid;
+                $path = 'node/' . (int) $nid;
+                $alias = drupal_get_path_alias($path);
+                $data['path'] = $base_url . '/' . $path;
+                $data['url'] = $base_url . '/' . $alias;
+
+                $vocabulary = taxonomy_vocabulary_machine_name_load('lecturer');
+                $terms = entity_load('taxonomy_term', FALSE, array('vid' => $vocabulary->vid));
+                $data['field_writer']->url_to_segel = '' ;
+                foreach ($terms as $i => $term){
+                    if (isset($term->field_id_writer['und'][0]['tid'])){
+                        if ($term->field_id_writer['und'][0]['tid'] == $result->field_writer['und'][0]['tid']){
+                            $data['field_writer']->url_to_segel = $base_url . "/segel/" . $term->tid;
+                        }else{
+                          $data['field_writer']->url_to_segel =  $base_url . '/search?writer=' . $data['field_writer']->tid;
+                        }
+                    }
+                }
+                $result = $data;
+            }
+            if (isset($result['field_video_youtube'])){
+                if (is_array($result['field_video_youtube']) || is_object($result['field_video_youtube'])){
+                    $result['field_video_youtube'][LANGUAGE_NONE][0]['embed_youtube'] = '<iframe width="560" height="315" src="'.$result['field_video_youtube']['und'][0]['input'].'" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+                }
+            }
+            if (is_array($result['field_intro']) || is_object($result['field_intro'])){
+              $rtl = '<div dir=rtl>' . $result['field_intro'][LANGUAGE_NONE][0]['value'] . '</div>';
+              $safe_rtl = '<div dir=rtl >' . $result['field_intro'][LANGUAGE_NONE][0]['safe_value'] . '</div>';
+              $result['field_intro'][LANGUAGE_NONE][0]['value'] = $rtl;
+              $result['field_intro'][LANGUAGE_NONE][0]['safe_value'] = $safe_rtl;
+            }
+            if (is_array($result['body']) || is_object($result['body'])){
+                if (strpos($result['body'][LANGUAGE_NONE][0]['value'], '[quote]') !== false) {
+                    $css = '<style type="text/css" media="all">@import url("/'.drupal_get_path('theme', 'republish_theme') . '/stylesheets/api_web.css'.'");</style>';
+                    $quote = $css . '<div class="quote-wrapper"><img src="/sites/all/themes/republish_theme/images/quate.png" width="54" height="59"><div class="border"></div>';
+                    $quote .= '<div class="quote">';
+                    $quote .= '<div class="field field-name-field-quote-body field-type-text-long field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even">' . $result['field_quote_body']['und'][0]['value']. '</div>
+                                </div>
+                              </div>';
+                    $quote .= '<div class="field field-name-field-quote-source field-type-text field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even">'. $result['field_quote_source']['und'][0]['value'] . '</div>
+                                </div>
+                              </div>';
+                    $quote .= '</div>';
+                    $quote .= '</div>';
+                    $result['body'][LANGUAGE_NONE][0]['value'] = str_replace("[quote]", $quote  ,$result['body'][LANGUAGE_NONE][0]['value']);
+                }
+              $rtl = '<div dir=rtl style="font-size: 20px;">' . $result['body'][LANGUAGE_NONE][0]['value'] . '</div>';
+              $safe_rtl = '<div dir=rtl style="font-size: 20px;">' . $result['body'][LANGUAGE_NONE][0]['safe_value'] . '</div>';
+              $result['body'][LANGUAGE_NONE][0]['value'] = $rtl;
+              $result['body'][LANGUAGE_NONE][0]['safe_value'] = $safe_rtl;
+            }
+        }
+        if($args[0] == 'index'){
+           foreach ($result as $key => $value){
+               if (isset($result[$key]->nid)) {
+                   $obj = _fields_data($result[$key], 'node');
+                   $data = (array)$obj;
+                   $result[$key] = $data;
+               }
+           }
+        }
+    }
+    if($args[1] == 'taxonomy_term') {
+        if($args[0] == 'retrieve'){
+            if (isset($result->tid)) {
+                if ($result->field_id_writer){
+                    $writer_tid = $result->field_id_writer['und'][0]['tid'];
+                }else{
+                    $writer_tid = '';
+                }
+
+                if( $result->vid == '4'){
+                    $results_article = views_get_view_result('lecturer_participate_of_evant', 'page' , array($writer_tid));
+                    foreach ($results_article as $key => $value){
+                        $result->views_article[$key]['term'] = $value->field_field_section[0]['rendered']['#title'];
+                        $result->views_article[$key]['term_link'] = $value->field_field_section[0]['rendered']['#options']['entity']->tid;
+                        $result->views_article[$key]['title'] = $value->node_title;
+                        $result->views_article[$key]['nid'] = $value->nid;
+                    }
+                    $results_courses = views_get_view_result('lecturer_participate_of_evant', 'page_1' );
+                    foreach ($results_courses as $key => $value){
+                        $result->views_courses[$key]['title'] = $value->node_title;
+                        $result->views_courses[$key]['nid'] = $value->nid;
+                        $result->views_courses[$key]['img'] = file_create_url($results_courses[0]->field_field_event_image[0]['raw']['uri']);
+                        $result->views_courses[$key]['date'] = $results_courses[0]->field_field_event_date[0]['raw']['value'];
+                    }
+                }
+                $data = _fields_data($result, 'taxonomy_term');
+
+            }
+        }
+    }
+
+}
+
+/**
+ * Implements hook_menu().
+ */
+function rp_ws_menu()
+{
+    $items['admin/config/development/cache_app'] = array(
+        'title' => 'Cache application',
+        'description' => 'check if save new entity and to clear cache on application',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('rp_ws_admin'),
+        'access arguments' => array('administer rp_ws settings'),
+        'type' => MENU_NORMAL_ITEM,
+        'weight' => -20,
+    );
+
+    return $items;
+}
+
+function rp_ws_admin($content = NULL){
+    $form = array();
+
+    $form['rp_ws_http_app'] = array(
+        '#type' => 'textfield',
+        '#size' => '255',
+        '#title' => t('Insert url to app'),
+        '#description' => t('this link to clear cache on application'),
+        '#default_value' => variable_get('rp_ws_http_app', ''),
+    );
+    $form['rp_ws_status_cache_app'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('choice to clear cache the app '),
+        '#description' => t('after the clear make this unchecked'),
+        '#default_value' => variable_get('rp_ws_status_cache_app', ''),
+    );
+    $form['#submit'][] = 'rp_ws_admin_submit';
+
+    return system_settings_form($form);
+
+}
+
+function rp_ws_admin_submit($form, &$form_state){
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, variable_get(''));
+    curl_setopt($ch, CURLOPT_POST, 1);
+
+// In real life you should use something like:
+// curl_setopt($ch, CURLOPT_POSTFIELDS,
+//          http_build_query(array('postvar1' => 'value1')));
+
+// Receive server response ...
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $server_output = curl_exec($ch);
+
+    curl_close ($ch);
+
+// Further processing ...
+    if ($server_output == "[]") {
+        devel_set_message('true, status is ' .  variable_get('rp_ws_status_cache_app'),'warning');
+    } else {
+        devel_set_message('false, status is ' .  variable_get('rp_ws_status_cache_app'),'warning');
+    }
+}
+
+function rp_ws_entity_presave($entity, $type) {
+    variable_set('rp_ws_status_cache_app', 1);
+}

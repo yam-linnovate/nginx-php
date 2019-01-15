@@ -1,0 +1,5 @@
+core = "7.x"
+description = "Republish Most viewed content by piwik."
+name = "Rp - Piwik Report"
+package = Republish
+core = 7.x

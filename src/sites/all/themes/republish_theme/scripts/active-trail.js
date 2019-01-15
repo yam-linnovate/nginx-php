@@ -1,0 +1,11 @@
+var _atsc_paq = _atsc_paq || [];
+_atsc_paq.push(['atTrackPageView']);
+_atsc_paq.push(['atEnableLinkTracking']);(function () {_atsc_paq.push(['setCookieDomain', 'atsc.activetrail.com']);
+    _atsc_paq.push(['atSetSiteId', 'dd389543-682f-4606-ba34-445927859622']);
+    _atsc_paq.push(['setUserId', '_atscid']);
+    _atsc_paq.push(['atSetTrackerUrl', '//atsc.activetrail.com/api/Track']);
+    _atsc_paq.push(['addListener', document]);
+    _atsc_paq.push(['addListenerIdle', document]);
+    _atsc_paq.push(['addListenerScrollTo', document]);
+    _atsc_paq.push(['addListenerCloseTab', document]);
+    var atsc_d = document, atsc_g = atsc_d.createElement('script'), atsc_s = atsc_d.getElementsByTagName('script')[0]; atsc_g.type = 'text/javascript'; atsc_g.type = 'text/javascript';atsc_g.async = true; atsc_g.defer = true; atsc_g.src = '//atsc.activetrail.com/Scripts/Atsc.js'; atsc_s.parentNode.insertBefore(atsc_g, atsc_s);})();

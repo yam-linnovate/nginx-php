@@ -1,0 +1,167 @@
+@include large() {
+  .panel-panel.main-left {
+    .pane-event-from-lecturer {
+      margin-bottom: 7px;
+      padding: 0;
+      @include pane-title_with_icon(15px, 30px);
+      .pane-title {
+        background-image: url(../images/thumbtack.jpg);
+        background-size: 32px 37px;
+        border-bottom: 6px solid $green;
+        @include font_family_regular;
+        font-weight: 500;
+        height: 38px;
+        margin: 0 20px 18px 22px;
+        padding-top: 14px;
+        &:before {
+          border-bottom: 3px solid white;
+          bottom: -2px;
+        }
+      }
+      .view-content {
+        display: flex;
+        flex-flow: row;
+        flex-wrap: wrap;
+        padding: 0 19px 3px 19px;
+        .views-row {
+          flex: 1 47%;
+          padding: 1.5%;
+          display: grid;
+          grid-template-columns: 215px 225px;
+          grid-column-gap: 20px;
+          .views-field.views-field-field-event-image {
+            grid-row: 1 / 4;
+          }
+          .views-field-title {
+            font-size: 1.3em;
+            @include font_family_regular;
+            line-height: 1.1em;
+            a {
+              color: $black;
+              display: block;
+              @include font_family_regular;
+              line-height: 20px;
+              margin-top: 3px;
+            }
+          }
+          .views-field-field-event-date {
+            display: inline-block;
+            background: url(../images/date.png);
+            width: 18px;
+            height: 17px;
+            margin-left: 5px;
+            margin-top: 2px;
+            vertical-align: middle;
+            background-size: contain;
+            font-size: 14px;
+            .field-content {
+              margin-right: 25px;
+            }
+          }
+          .views-field-php {
+            .field-content {
+              a {
+                align-content: center;
+                bottom: 0;
+                background-color: $green;
+                line-height: 32px;
+                margin: 12px 0 10px 0;
+                padding: 0 9px;
+                display: inline-block;
+                border-radius: 4px;
+                @include font_family_bold;
+                color: white;
+              }
+              p {
+                align-content: center;
+                bottom: 0;
+                background-color: $fade-gray;
+                padding: 5px 20px;
+                margin: 10px 0;
+                display: inline-block;
+                border-radius: 4px;
+               @include font_family_bold;
+                color: white;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@include small() {
+  .pane-event-from-lecturer {
+    order: 2;
+    background-color: white;
+    border-bottom: 1px solid $light_green;
+    border-top: 1px solid $light_green;
+    margin-bottom: 15px;
+    padding: 0;
+    .pane-title {
+      @include underlined_title_mobile();
+      background: none;
+      @include font_family_regular;
+      font-weight: 500;
+      height: 53px;
+      margin-bottom: 8px;
+      padding: 12px 10px 8px 10px;
+    }
+    .views-field-php {
+      display: none;
+    }
+    .views-row {
+      border-bottom: 1px solid $light_green;
+      display: block;
+      overflow: auto;
+      padding: 15px 10px;
+      position: relative;
+      &:last-child {
+        border-bottom: none;
+      }
+      .views-field-field-event-image {
+        float: right;
+        width: 43%;
+        a {
+          display: block;
+        }
+        img {
+          height: auto;
+          max-width: 100%;
+        }
+      }
+      .views-field-title {
+        float: left;
+        margin: -3px 0 10px 0;
+        width: 52%;
+        a {
+          color: $black;
+          display: block;
+          @include font_family_regular;
+          font-weight: 500;
+          font-size: 18px;
+          line-height: 1;
+        }
+      }
+      .views-field-field-event-date {
+        background-image: url(../images/date.png);
+        background-position: center right;
+        background-repeat: no-repeat;
+        background-size: 14px;
+        display: inline-block;
+        float: left;
+        @include font_family_regular;
+        font-size: 14px;
+        height: 17px;
+        margin-bottom: 0;
+        margin-left: 0;
+        vertical-align: middle;
+        width: 52%;
+        .field-content {
+          margin-right: 20px;
+        }
+      }
+    }
+  }
+}

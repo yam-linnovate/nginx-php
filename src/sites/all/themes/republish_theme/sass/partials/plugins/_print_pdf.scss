@@ -1,0 +1,36 @@
+@media print {
+    .panel-panel.unit.main-left,
+    .pane-most-viewed-articles,
+    .header,
+    .bottom-social,
+    .inner-header,
+    .time_and_date,
+    #footer {
+        display: none;
+    }
+    .panel-panel.unit.main-right {
+        width: 100% !important;
+        direction: inherit !important;
+        .header-content h1 {
+            width: 100% !important;
+        }
+        .wrapper-units, .details.cassification, .extra_details {
+            position: absolute;            
+            width: 90%;
+            text-align: center;            
+        }
+        .wrapper-units {
+            top: 30px;
+            display: -webkit-box;
+        }
+        .details {
+            display: inline-block;
+            &.cassification {
+                top: 100px;
+            }
+        }
+        .extra_details {
+            bottom: 0;
+        }    
+    }   
+}

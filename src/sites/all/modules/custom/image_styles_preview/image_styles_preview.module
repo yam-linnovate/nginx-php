@@ -1,0 +1,200 @@
+<?php
+
+/**
+ * @file image_styles_preview.module
+ * TODO: Enter file description here.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function image_styles_preview_menu() {
+  $items['image-styles-preview'] = array(
+    'title' => t('Preview image styles'),
+    'page callback' => 'image_styles_preview_render_styles',
+    'access arguments' => array('access content'),
+  );
+  $items['image-styles-preview-try'] = array(
+    'title' => t('Re-editing image styles'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('image_styles_preview_render_styles_try'),
+    'type' => MENU_CALLBACK,
+    'access callback' => TRUE,
+    'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+
+function image_styles_preview_render_styles_try($form, &$form_state) {
+  //load files of cropit
+  drupal_add_css(drupal_get_path('module', 'image_styles_preview') . '/css/cropit.css');
+  drupal_add_js(drupal_get_path('module', 'image_styles_preview') . '/js/cropit_load.js');
+  drupal_add_js(drupal_get_path('module', 'image_styles_preview') . '/js/jquery.cropit.js');
+
+  //load list image style
+  $styles = image_styles();
+  $styles_image = array();
+  //get width & height of image styles
+  foreach ($styles as $key => $val) {
+    $arr = $styles[$key]['effects']; //get efect styles
+    $arr_sty = current($arr);
+    $arr_sty_data = $arr_sty['data'];
+    if (!isset($arr_sty_data['width'])) {
+      $arr_sty = end($arr);
+      $arr_sty_data = $arr_sty['data'];
+    }
+    $styles_image[$arr_sty_data['width'] . 'x' . $arr_sty_data['height']] = $key;
+  }
+  //styles
+  $form['select_image_style'] = array(
+    '#type' => 'select',
+    '#options' => $styles_image,
+    '#default_value' => '100x70',
+  );
+
+  $form['hidden_load_image'] = array(
+    '#type' => 'hidden',
+  );
+
+  $form['hidden_image_type'] = array(
+    '#type' => 'hidden',
+  );
+
+  $form['image_submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#submit' => array('image_styles_preview_render_styles_try_submit')
+  );
+
+  $form['image_reset'] = array(
+    '#type' => 'submit',
+    '#value' => t('Reset to default image style'),
+    '#submit' => array('image_styles_preview_render_styles_reset_submit')
+  );
+
+  return $form;
+}
+function image_styles_preview_render_styles_reset_submit($form, &$form_state) {
+  $path_image = $_SERVER['QUERY_STRING'];
+  $type = $form['hidden_image_type']['#value'];
+  $path_image = substr($path_image, 9 , -3);
+  $path_image = explode("articles", $path_image);
+  $style_name = $form['select_image_style']['#value'];
+  $path_image = 'sites/default/files/styles/' . $style_name . '/public/images/articles' . $path_image[1] . $type;
+  print $path_image;
+   if (file_unmanaged_delete($path_image))
+      drupal_set_message(t('The image has been reset successfully'));
+    else
+      drupal_set_message(t('Reseting the image has failed'), 'error');
+  $img = $_GET['image'];
+  $path_img = filter_xss($img);
+  drupal_goto('image-styles-preview', array('query' => array('image' => $path_img)));
+
+}
+
+function image_styles_preview_render_styles_try_submit($form, &$form_state) {
+
+  //save your data into a variable - last part is the base64 encoded image
+  $encoded = $form['hidden_load_image']['#value'];
+  $type = $form['hidden_image_type']['#value'];
+  $path_image = $_SERVER['QUERY_STRING'];
+  $path_image = substr($path_image, 9, -3);
+  $path_image = explode("articles", $path_image);
+  $style_name = $form['select_image_style']['#value'];
+  $path_image = 'sites/default/files/styles/' . $style_name . '/public/images/articles' . $path_image[1];
+  $path_ = substr($path_image, 0, strrpos($path_image, "/"));
+
+  $file = $path_image . $type;
+
+  if (!file_exists($path_)) {
+    mkdir($path_, 0777, true);
+  }
+
+  saveImage($encoded, $file, $type);
+
+  $form_state['redirect'] = FALSE;
+  $img = $_GET['image'];
+  $path_img = filter_xss($img);
+  drupal_goto('image-styles-preview', array('query' => array('image' => $path_img)));
+}
+
+function image_styles_preview_render_styles() {
+  $output = '';
+  $img = $_GET['image'];
+  $styles = image_styles();
+
+  drupal_add_css(drupal_get_path('module', 'image_styles_preview') . '/image_styles_preview.css');
+  drupal_add_js(drupal_get_path('module', 'image_styles_preview') . '/image_styles_preview.js', array('scope' => 'footer'));
+
+  $path_img = filter_xss($img);
+  $output .="<div class='re-edit-image' >";
+  $output .='<a class="redit-image" href="image-styles-preview-try?image=' . $path_img . '" target="blank">' . t('Re-editing image styles') . '</a>';
+  $output .='</div>';
+  foreach ($styles as $style) {
+    $options = array(
+      'style_name' => $style['name'],
+      'path' => $img,
+      'title' => $style['name'],
+      'alt' => $style['name'],
+      'attributes' => array('class' => 'image_styles_preview'),
+    );
+
+    $output .= l(theme('image_style', $options), image_style_url($style['name'], $img), array('attributes' => array('target' => '_blank', 'class' => 'img-link'), 'html' => TRUE));
+  }
+
+  return $output;
+}
+
+/**
+ * Implementation of hook_field_widget_form_alter().
+ */
+function image_styles_preview_field_widget_form_alter(&$element, &$form_state, $context) {
+  $widget_type = $context['instance']['widget']['type'];
+  if (image_styles_preview_widget_support($widget_type)) {
+    foreach (element_children($element) as $delta) {
+      $element[$delta]['#process'][] = 'image_styles_preview_widget_' . $widget_type . '_process';
+    }
+  }
+}
+
+/**
+ * Element #process callback function; process widget type image_image.
+ */
+function image_styles_preview_widget_image_image_process($element, &$form_state, $form) {
+  $item = $element['#value'];
+  if ($element['#file']) {
+    $uri = $element['#file']->uri;
+    //$uri = str_replace('public://', 'sites/default/files/', $uri);
+    $element['preview']['#suffix'] = '<br>' . l(t('Preview styles'), 'image-styles-preview', array('attributes' => array('target' => '_blank'), 'query' => array('image' => $uri)));
+  }
+
+  return $element;
+}
+
+/**
+ * Return whether we have support for the given widget.
+ */
+function image_styles_preview_widget_support($type) {
+  return function_exists('image_styles_preview_widget_' . $type . '_process');
+}
+
+/**
+ * Implements hook_js_alter().
+ */
+function image_styles_preview_js_alter(&$javascript) {
+  if (arg(0) == "image-styles-preview-try") {
+    $javascript['misc/jquery.js']['data'] = drupal_get_path('module', 'image_styles_preview') . '/js/jquery.min.js';
+  }
+}
+
+function saveImage($encoded, $file, $type) {
+  $encoded = str_replace('data:image/' . $type . ';base64,', '', $encoded);
+  $img = $encoded;
+  $img = str_replace(' ', '+', $img);
+  $data = base64_decode($img);
+  if (file_put_contents($file, $data))
+    drupal_set_message(t('The image has been saved'));
+  else
+    drupal_set_message(t('Saving the image has failed'), 'error');
+}

@@ -1,0 +1,28 @@
+.pane-download-app{
+  .download-app{
+    display: block;
+    height: 290px;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .wrap-btn-down{
+    display: flex;
+    flex-flow: row ;
+    justify-content: space-around;
+  }
+  .desc-download{
+    font-size: 24px;
+    padding: 145px 10px 0;
+    color: white;
+    text-align: center;
+    line-height: 20px;
+  }
+}
+@include small() {
+  .pane-download-app{
+    margin-bottom: 15px;
+    .download-app {
+      background-size: cover;
+    }
+  }
+}

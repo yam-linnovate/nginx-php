@@ -1,0 +1,18 @@
+@include small {
+  .front {
+    overflow-x: hidden;
+    padding-top: 46px;
+    * {
+      box-sizing: border-box;
+    }
+
+    // menu
+    .field-collection-item-field-images {
+      .img-wrapper {
+        .image-label.photo-by {
+          display: none;
+        }
+      }
+    }
+  }
+}

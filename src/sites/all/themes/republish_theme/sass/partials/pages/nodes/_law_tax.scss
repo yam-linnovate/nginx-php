@@ -1,0 +1,117 @@
+@include large() {
+  .lobby-view-more {
+    display: none;
+  }
+  .page-law-tax {
+    #main-wrapper {
+      #main {
+        .panel-panel {
+          .pane-section-lobby-top-articles {
+            background-color: white !important;
+          }
+        }
+      }
+    }
+    .pane-section-lobby-articles {
+      .pane-content {
+        .pane-title {
+          font-size: 30px;
+        }
+      }
+    }
+  }
+}
+@include small {
+  .page-law-tax {
+    .inside {
+      .pane-section-lobby-top-articles {
+        .main-large {
+          .lobby-view-more {
+            display: none;
+          }
+        }
+        .pane-content {
+          .main-left {
+            .img-wrapper {
+              .img {
+                margin-bottom: 0;
+              }
+            }
+            .video.icon {
+              left: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+  .section-law-tax {
+    padding-top: 46px;
+    * {
+      box-sizing: border-box;
+    }
+    .content {
+      overflow-x: hidden;
+      .pane-section-lobby-header {
+        .title {
+          @include underlined_title_mobile();
+          background-color: white;
+          border-top: 1px solid #d3e8ec;
+        }
+      }
+    }
+    .pane-section-lobby-video {
+      background: white;
+      border-bottom: 1px solid #d3e8ec !important;
+      border-top: 1px solid #d3e8ec !important;
+      margin-bottom: 10px;
+      .pane-content {
+        padding: 0;
+        .view-content {
+          display: block;
+          a {
+            display: block;
+            width: 100%;
+            img {
+              width: 100%;
+            }
+          }
+          .views-row {
+            .views-field-name,
+            .views-field-created {
+              display: none;
+            }
+            .views-field-field-front-page-title {
+              font-size: 18px;
+              font-weight: bold;
+              line-height: 1.1;
+              margin-bottom: 31px;
+              margin-top: 10px;
+              padding: 0 10px;
+              a {
+                color: $black;
+              }
+            }
+            &.views-row-last {
+              .views-field-field-front-page-title {
+                margin-bottom: 18px;
+              }
+            }
+          }
+        }
+        .pane-title {
+          @include underlined_title_with_icon_mobile();
+          .title-text {
+            background: url(../images/tv_icon.jpg) right no-repeat;
+            display: inline-block;
+            padding-right: 50px;
+          }
+          .black-span.second {
+            display: none;
+          }
+          @include view_more_title_mobile();
+        }
+      }
+    }
+  }
+}

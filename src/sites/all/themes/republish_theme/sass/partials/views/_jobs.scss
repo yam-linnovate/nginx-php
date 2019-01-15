@@ -1,0 +1,218 @@
+@include large() {
+  .pane-jobs-view {
+    .views-exposed-form {
+      display: none;
+    }
+    .category-container {
+      margin-bottom: 41px;
+    }
+    .jobs-category-header {
+      margin-bottom: 17px;
+      a {
+        display: flex;
+        justify-content: space-between;
+      }
+      .path {
+        background-color: $green;
+        border-radius: 4px;
+        color: white; 
+        display: inline-block;
+        font-family: Heebo-Medium;
+        font-size: 14px;
+        line-height: 30px;
+        padding: 0 12px;
+      }
+      .name {
+        color: #1a1a1a;
+        font-family: Heebo-ExtraBold;
+        font-size: 24px;
+        line-height: 1;
+        margin-top: 3px;
+      }
+    }
+    .rows-container {
+      display: flex;
+      justify-content: flex-start;
+    }
+    .views-row {
+      background-color: white;
+      box-shadow: #b0b0b0 0px 0px 10px;
+      margin-left: 35px;
+      padding: 20px 24px 20px 20px;
+      width: 270px;
+    }
+    .views-row-last {
+      margin-left: 0;
+    }
+    .jobs-bottom {
+      display: flex;
+      justify-content: flex-start;
+    }
+    .views-field-field-company {
+      line-height: 1;
+      a {
+        color: #1a1a1a;
+        font-family: Heebo-Light;
+        font-size: 15px;
+      }
+    }
+    .views-field-title {
+      margin-bottom: 14px;
+      a {
+        color: #1a1a1a;
+        font-family: Heebo-ExtraBold;
+        font-size: 21px;
+      }
+    }
+    .size {
+      background-image: url('/sites/all/themes/republish_theme/images/clock.png');
+      background-position: right top;
+      background-repeat: no-repeat;
+      color: #1a1a1a;
+      font-family: Heebo-Light;
+      font-size: 12px;
+      margin-right: 10px;
+      padding-right: 19px;
+    }
+    .experience {
+      background-image: url('/sites/all/themes/republish_theme/images/bag.png');
+      background-position: right top;
+      background-repeat: no-repeat;
+      color: #1a1a1a;
+      font-family: Heebo-Light;
+      font-size: 12px;
+      padding-right: 19px;
+    }
+  }
+}
+
+@include small() {
+  .pane-jobs-view {
+    .slick-arrow{
+      border-radius: 0;
+      width: 20px;
+      height: 31px;
+      z-index: 9;
+    }
+    .slick-next {
+      left: 15px;
+    }
+    .slick-prev {
+      right: 15px;
+    }
+    .slick-next:before{
+      background-image: url('/sites/all/themes/republish_theme/images/left.png');
+      background-repeat: no-repeat;
+      content: '' !important;
+      display: block;
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+    }
+    .slick-prev:before{
+      background-image: url('/sites/all/themes/republish_theme/images/right.png');
+      background-repeat: no-repeat;
+      content: '' !important;
+      display: block;
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+    }
+    .views-exposed-form {
+      display: none;
+    }
+    .category-container {
+      margin-bottom: 23px;
+    }
+    .jobs-category-header {
+      margin-bottom: 7px;
+      a {
+        display: flex;
+        justify-content: space-between;
+      }
+      .path {
+        background-color: $green;
+        border-radius: 6px;
+        color: white;
+        display: inline-block;
+        font-family: Heebo-Black;
+        font-size: 13px;
+        line-height: 27px;
+        padding: 0 9px;
+        margin-left: 18px;
+      }
+      .name {
+        color: #1a1a1a;
+        @include font_family_bold;
+        font-size: 24px;
+        line-height: 1;
+        margin-top: 3px;
+        margin-right: 9px;
+      }
+    }
+    .rows-container {
+      display: flex;
+      justify-content: flex-start;
+      .slick-list {
+        width: 100%;
+      }
+    }
+    .views-row {
+      background-color: white;
+      box-shadow: #c6c6c6 0px 7px 10px;
+      padding:14px 30% 20px 20px;
+      width: 270px;
+      margin: 3px 0 3px 35px;
+    }
+    .views-row-last {
+      margin-left: 0;
+    }
+    .jobs-bottom {
+      display: flex;
+      justify-content: flex-start;
+    }
+    .views-field-field-company {
+      line-height: 8px;
+      a {
+        color: #1a1a1a;
+        font-family: Heebo-Bold;
+        font-size: 16.5px;
+      }
+    }
+    .views-field-title {
+      margin-bottom: 0px;
+      a {
+        color: #1a1a1a;
+        font-family: Heebo-ExtraBold;
+        font-size: 22px;
+        line-height: 28px;
+        &:hover, &:active, &:focus {
+          border: none;
+        }
+      }
+    }
+    .size {
+      background-image: url('/sites/all/themes/republish_theme/images/clock.png');
+      background-position: right top;
+      background-repeat: no-repeat;
+      color: #1a1a1a;
+      @include font_family_regular;
+      font-weight: 600;
+      font-size: 20px;
+      margin-right: 10px;
+      padding-right: 19px;
+      line-height: 16px;
+    }
+    .experience {
+      background-image: url('/sites/all/themes/republish_theme/images/bag.png');
+      background-position: right top;
+      background-repeat: no-repeat;
+      color: #1a1a1a;
+      @include font_family_regular;
+      font-weight: 600;
+      font-size: 20px;
+      padding-right: 19px;
+      line-height: 16px;
+    }
+  }
+}

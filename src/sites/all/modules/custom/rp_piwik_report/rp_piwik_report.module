@@ -1,0 +1,37 @@
+<?php
+
+
+function rp_piwik_report_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'page_manager' || $module == 'panels' || $module == 'ctools') {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/*function rp_piwik_report_menu(){
+    $items['most_viewed_articles'] = array(
+        'title' => 'Most Viewed Articles',
+        'page callback' => 'most_viewed_articles',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}*/
+
+
+function rp_piwik_report_cron(){
+  $filter_date = date('Y-m-d', strtotime("-1 month"));
+	$piwik_list = variable_get('piwik_list');
+	if($piwik_list){
+		$url = $piwik_list['url'];
+    $filter_limit = $piwik_list['filter_limit'];
+    $token_auth = $piwik_list['token_auth'];
+	
+		$url .= "?module=API&method=Actions.getPageUrls";
+		$url .= "&idSite=1&period=month&date=$filter_date";
+		$url .= "&format=PHP&idSubtable=1&filter_limit=$filter_limit";
+    $url .= "&token_auth=$token_auth"; 
+		$fetched = file_get_contents($url);
+    $piwik_content = unserialize($fetched);
+    variable_set('piwik_content',	$piwik_content);
+    variable_del('piwik_list');
+	}
+}

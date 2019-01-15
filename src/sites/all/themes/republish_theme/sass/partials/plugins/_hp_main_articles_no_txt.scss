@@ -1,0 +1,270 @@
+@include large() {
+  .pane-hp-main-articles-no-txt {
+    padding: 17px;
+    & * {
+      box-sizing: border-box;
+    }
+    hr {
+      display: none;
+    }
+    .fp-intro {
+      display: none;
+    }
+    .details {
+      display: none;
+    }
+    .hp-articles-top {
+      padding: 0 7px;
+      .large-article {
+        display: flex;
+        flex-direction: row-reverse;
+        position: relative;
+        margin-bottom: 16px;
+        .image-description {
+          color: #555f6e;
+          font-size: 14px;
+          display: none;
+          &:before {
+            content: ' ';
+            width: 27px;
+            display: inline-block;
+            height: 8px;
+            margin-top: 11px;
+            margin-left: 10px;
+            background: url(../images/border-img-desc.png);
+          }
+        }
+        .pre-title-wrapper {
+          display: block;
+          margin-bottom: 15px;
+        }
+        .pre-title {
+          display: inline-block;
+          background: $green;
+          color: white;
+          font-size: 20px;
+          font-family: 'almoni-neue-aaa-400';
+          padding: 0 16px;
+        }
+        .large-article-top {
+          position: relative;
+          width: 100%;
+          .field-collection-item-field-images {
+            .image-label.description {
+              display: none;
+            }
+          }
+        }
+        .large-article-bottom {
+          margin-top: 3px;
+          padding: 8px 10px;
+          width: 100%;
+          position: absolute;
+          bottom: 0px;
+          .intro {
+            margin-bottom: 10px;
+            .main-intro {
+              color: white;
+              display: block;
+              font-size: 34px;
+              font-weight: 700;
+              line-height: 30px;
+              overflow: hidden;
+              @include font_family_bold;
+            }
+          }
+          .publishing-info {
+            margin-bottom: 5px;
+          }
+          hr {
+            border-color: #d3e8ec;
+            margin: 23px 0 12px 0;
+          }
+        }
+      }
+    }
+    .hp-articles-bottom {
+      border-top: 1px solid $light-gray;
+      .field-name-field-front-page-title {
+        font-size: 16px;
+        line-height: 21px;
+        color: #222;
+        max-height: 45px;
+        height: 45px;
+        overflow: hidden;
+        @include font_family_bold;
+        font-weight: 400;
+        width: 90%;
+        padding-right: 5px;
+      }
+      .bottom-row {
+        display: flex;
+        .small-article {
+          flex-basis: 33.3333%;
+          display: flex;
+          flex-direction: column-reverse;
+          padding: 0 7px 20px 7px;
+          position: relative;
+          .small-article-left {
+            margin-bottom: 9px;
+          }
+          // .small-article-right {
+          //   .title {
+          //     .field-name-field-front-page-title {
+          //       font-weight: bold;
+          //       line-height: 21px;
+          //     }
+          //   }
+          // }
+        }
+      }
+    }
+  }
+}
+
+@include small {
+  .pane-hp-main-articles-no-txt {
+    .large-article {
+      border-bottom: 1px solid $light-green;
+      .large-article-top {
+        position: relative;
+        .field-collection-item-field-images {
+          .image-label.description {
+            display: none;
+          }
+        }
+        .img-wrapper {
+          .image-label.photo-by {
+            display: none;
+          }
+        }
+        .titles {
+          bottom: 0;
+          max-width: 95%;
+          position: absolute;
+          right: 0;
+          .pre-title {
+            display: inline-block;
+            background: $green;
+            color: white;
+            font-size: 16px;
+            @include font_family_bold;
+            padding: 0 8px 0 16px;
+          }
+          .title {
+            display: block;
+            .field-item {
+              background: $dark-blue;
+              color: white;
+              @include font_family_bold;
+              font-size: 22px;
+              line-height: 1.2;
+              max-height: 115px;
+              overflow: hidden;
+              padding: 0 8px;
+            }
+          }
+        }
+      }
+      .large-article-bottom {
+        margin-top: 3px;
+        padding: 0 10px 37px 10px;
+        position: relative;
+        hr {
+          display: none;
+        }        
+        .main-intro {
+          color: $black;
+          display: inline-block;
+          @include font_family_bold;
+          font-size: 18px;
+          line-height: 1;
+          margin-left: 0;
+          max-height: 96px;
+          overflow: hidden;
+          padding: 8px 0 3px 0;idth: 100%;
+        }
+      }
+    }
+    .hp-articles-bottom {
+      margin-left: 0;
+      padding: 0;
+      .bottom-row {
+        display: inline-block;
+        margin-left: 0;
+        vertical-align: top;
+        width: 100%;
+        .small-article {
+          background-color: white;
+          border-bottom: 1px solid $light-green;
+          display: block;
+          margin: 0;
+          overflow: auto;
+          padding: 15px 10px;
+          hr {
+            display: none;
+          }
+          .created,
+          .delimiter {
+            display: none;
+          }
+          .title {
+            margin-left: 0;
+            .field-items {
+              .field-item {
+                max-height: none;
+                font-weight: bold;
+              }
+            }
+          }
+          .small-article-right {
+            float: left;
+            position: static;
+            width: 53%;
+            a {
+              display: block;
+            }
+            .field-name-field-front-page-title {
+              color: $black;
+              display: block;
+              @include font_family_bold;
+              font-size: 19px;
+              line-height: 1.2;
+              margin-bottom: 7px;
+              padding: 0;
+              width: 100%;
+            }
+            .title {
+              .field-item {
+                height: auto;
+              }
+            }
+            .writer {
+              display: block;
+              ul {
+                padding: 0;
+                margin: 0;
+                li {
+                  color: $green;
+                  display: block;
+                  font-family: arial;
+                  font-size: 12px;
+                  line-height: 1;
+                }
+              }
+            }
+          }
+          .small-article-left {
+            float: right;
+            margin: 0;
+            padding: 0;
+            width: 43%;
+          }
+          &:last-child {
+            border-bottom: 1px solid $light_green;
+          }
+        }
+      }
+    }
+  }
+}

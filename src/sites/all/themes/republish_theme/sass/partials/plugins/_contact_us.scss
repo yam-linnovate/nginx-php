@@ -1,0 +1,41 @@
+.contact-us{
+  .main-content{
+    .wrap-icon {
+      display: flex;
+      box-sizing: border-box;
+      align-items: center;
+    }
+    .icon{
+      width: 75px;
+      height: 75px;
+      margin: 10px 30px 10px 10px;
+      border-radius: 50%;
+      background-color: $bg_icon;
+      &.call{
+        background-image: url("../images/icon-phone.png")  ;
+        background-repeat:no-repeat  ;
+        background-position: center center;
+      }
+      &.fax{
+        background-image: url("../images/icon-fax.png")  ;
+        background-repeat:no-repeat  ;
+        background-position: center center;
+      }
+      &.email{
+        background-image: url("../images/icon-email.png")  ;
+        background-repeat:no-repeat  ;
+        background-position: center center;
+      }
+      &.address{
+        background-image: url("../images/icon-address.png")  ;
+        background-repeat:no-repeat  ;
+        background-position: center center;
+      }
+    }
+    .field{
+      p{
+        font-size: 20px;
+      }
+    }
+  }
+}

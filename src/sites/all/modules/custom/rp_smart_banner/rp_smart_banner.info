@@ -1,0 +1,5 @@
+core = "7.x"
+description = "Republish Smart Banner."
+name = "Republish Smart Banner"
+package = Republish
+core = 7.x

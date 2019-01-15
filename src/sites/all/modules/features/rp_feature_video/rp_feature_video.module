@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Rp - Feature Video feature.
+ */
+
+include_once 'rp_feature_video.features.inc';

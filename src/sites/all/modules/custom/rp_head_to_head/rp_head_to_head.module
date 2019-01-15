@@ -1,0 +1,94 @@
+<?php
+
+/**
+ * Implements hook_init().
+ */
+function rp_head_to_head_init (){
+  drupal_add_js(drupal_get_path('module', 'rp_head_to_head') . '/js/rp_head_to_head.js'); 
+  drupal_add_js('https://ajax.cdnjs.com/ajax/libs/mustache.js/0.7.0/mustache.min.js', 'external');
+}
+
+function rp_head_to_head_menu(){
+  $items['head-to-head/poll'] = array(
+    'access callback'   => true,
+    'page callback'     => 'head_to_head_save_poll',
+  );
+  $items['head-to-head/get-polls'] = array(
+    'access callback'   => true,
+    'page callback'     => 'head_to_head_get_polls',
+  );
+
+  // $items['admin/config/rp_elasticsearch'] = array(
+  //   'title' => 'Republish Elasticsearch Configuration',
+  //   'page callback' => 'drupal_get_form',
+  //   'page arguments' => array('rp_elasticsearch_admin'),
+  //   'access arguments' => array('administer rp_elasticsearch settings'),
+  //   'type' => MENU_NORMAL_ITEM,
+  // );
+
+  return $items;
+}
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function rp_head_to_head_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'page_manager' || $module == 'panels' || $module == 'ctools') {
+    return 'plugins/' . $plugin;
+  }
+}
+
+function rp_head_to_head_theme() {
+
+  $themes = array ();
+  $themes['rp_head_to_head'] = array(
+    'template' => 'rp_head_to_head',//theme name
+    'variables' => array(
+      'head_to_head_img' => NULL,
+      'head_to_head_title' => NULL,
+      'positive_opinion_title' => NULL,
+      'positive_opinion_writer_name' => NULL,
+      'positive_opinion_writer_img' => NULL,
+      'negative_opinion_title' => NULL,
+      'negative_opinion_writer_name' => NULL,
+      'negative_opinion_writer_img' => NULL,
+      'head_to_head_path' => NULL,
+      'head_to_head_nid' => NULL,
+    ),
+  );
+  return $themes;
+}
+
+function head_to_head_save_poll(){
+  $params = drupal_get_query_parameters($_POST);
+  $nid = $params['nid'];
+  $poll = $params['poll'];
+  if($nid){
+    $node = node_load($nid);
+    if($node->type == 'head_to_head'){
+      switch($poll){
+        case '0': 
+          $node->field_negative_opinion_count['und'][0]['value'] = (int)$node->field_negative_opinion_count['und'][0]['value'] + 1;
+          break;
+        case '1':
+          $node->field_positive_opinion_count['und'][0]['value'] = (int)$node->field_positive_opinion_count['und'][0]['value'] + 1;
+          break;
+      }
+      node_save($node);      
+    }
+  }
+}
+
+function head_to_head_get_polls(){
+  $params = drupal_get_query_parameters();
+  $nid = isset($params['nid']) ? $params['nid'] : '';
+  if($nid){
+    $node = node_load($nid);
+    if($node->type == 'head_to_head'){
+      $results = array(
+        'positive' => $node->field_positive_opinion_count['und'][0]['value'],
+        'negative' => $node->field_negative_opinion_count['und'][0]['value'],
+      );
+      return drupal_json_output($results);      
+    }
+  }
+}

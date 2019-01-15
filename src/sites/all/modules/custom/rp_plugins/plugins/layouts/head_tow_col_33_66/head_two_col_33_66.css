@@ -1,0 +1,32 @@
+.panel-panel.header{
+    width: 100%;
+}
+
+@media(max-width: 1400px) and (min-width: 769px) {
+	.not-front.panel-layout-head-two-col-33-66 #main-wrapper .content-indent {
+		width: 100%;
+		margin: 0 auto;
+	}
+	.not-front.panel-layout-head-two-col-33-66  #main-wrapper #main {
+		width: 95%;
+		margin: 0 auto 30px auto;
+	}
+	.panel-head-two-col-33-66 .panel-panel.main-left{
+	    width: 70%;
+	}
+	.panel-head-two-col-33-66 .panel-panel.main-right{
+		margin: 0 0 0 1%;
+		width: 28%;
+	}
+}
+
+@media (min-width: 798px) {
+    .panel-head-two-col-33-66 .main-right{
+        width: calc(30% - 15px);
+        float: right;
+    }
+    .panel-head-two-col-33-66 .main-left{
+        width: calc(70% - 15px);
+        float: left;
+    }
+}

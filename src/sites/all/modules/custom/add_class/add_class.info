@@ -1,0 +1,6 @@
+
+core = "7.x"
+description = "Add body classes from anywhere."
+name = "add class"
+core = 7.x
+

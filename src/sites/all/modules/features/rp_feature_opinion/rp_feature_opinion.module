@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Rp - Feature Opinion feature.
+ */
+
+include_once 'rp_feature_opinion.features.inc';

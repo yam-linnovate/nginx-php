@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Rp - Feature Special projects feature.
+ */
+
+include_once 'rp_feature_special_projects.features.inc';

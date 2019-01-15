@@ -1,0 +1,5 @@
+name = Image styles preview
+description = Easily evaluate your images output.
+dependencies[] = image
+core = 7.x
+files[] = image_styles_preview.module

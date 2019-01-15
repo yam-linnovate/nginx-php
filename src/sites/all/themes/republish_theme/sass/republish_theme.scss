@@ -1,0 +1,45 @@
+/*entity_info_alter
+ * #############################################
+ * ##### Sasson - Advanced Drupal Theming. #####
+ * #############################################
+ *
+ *          Starterkit main stylesheet.
+ */
+@import "partials/base/colors";
+@import "partials/base/mixins";
+@import "partials/base/typo";
+@import "partials/settings";
+@import "salsa/salsa";
+@import "partials/layout/layout";
+@import "partials/layout/header";
+@import "partials/layout/footer";
+@import "partials/pages/nodes/article";
+@import "partials/pages/nodes/daily_component";
+@import "partials/pages/nodes/video";
+@import "partials/pages/nodes/law_tax.scss";
+@import "partials/pages/nodes/contact_us.scss";
+@import "partials/pages/nodes/not_found.scss";
+@import "partials/pages/nodes/head-to-head";
+@import "partials/pages/nodes/page_api";
+@import "partials/pages/pages";
+@import "partials/pages/page_segel";
+@import "partials/pages/panes/contact_us_form";
+@import "partials/plugins/plugins";
+@import "partials/plugins/special_projects";
+@import "partials/plugins/smart_banner";
+@import "partials/views/newsflash";
+@import "partials/views/jobs";
+@import "partials/components/select";
+
+
+@import "partials/components/header";
+
+
+@include element-links;
+@include video-icon;
+
+
+
+
+
+

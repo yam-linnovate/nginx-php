@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the RP - feature jobs feature.
+ */
+
+include_once 'rp_feature_jobs.features.inc';

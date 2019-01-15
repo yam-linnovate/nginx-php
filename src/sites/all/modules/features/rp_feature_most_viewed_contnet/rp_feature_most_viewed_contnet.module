@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Rp - Feature most viewed contnet feature.
+ */
+
+include_once 'rp_feature_most_viewed_contnet.features.inc';

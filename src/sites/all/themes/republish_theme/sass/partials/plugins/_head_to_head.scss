@@ -1,0 +1,337 @@
+.rp-head-to-head-main-wrapper {
+    background-color: #EBEBEB;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding-bottom: 15px;
+    .top-section {
+        width: 100%;
+        margin-bottom: 15px;
+        img {
+            width: 100%;
+        }
+    }
+    .main-section {
+        width: 100%;
+        height: 170px;
+        display: table;
+        & > * {
+            display: table-cell !important;
+        }
+        position: relative;
+        .subject-section {
+            position: relative;
+            width: 38%;
+            padding-left: 3%;
+            padding-right: 3%;
+            .box-wrapper {
+                height: 100%;
+                position: relative;
+                /*top: 0;
+                bottom: 0;*/
+                /*right: 15px;
+                left: 15px;*/
+                .subject-img {
+                    width: 100%;
+                    height: 100%;
+                }
+                .subject-title-wrapper {
+                    /*max-height: 71px;*/
+                    /*overflow: hidden;*/
+                    position: absolute;
+                    bottom: 0px;
+                    width: 80%;
+                    height: 80%;
+                    margin: 10%;
+                    display: table;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    color: white;
+                    .subject-title {
+                        font-size: 19px;
+                        padding: 5px;
+                        display: table-cell;
+                        text-align: center;
+                        font-weight: bold;
+                        vertical-align: middle;
+                    }
+                }
+            }
+        }
+        .negative-section,
+        .positive-section,
+        .subject-section {
+            display: inline-block;
+            vertical-align: top;
+            width: 31%;
+        }
+        .negative-section,
+        .positive-section {
+            position: relative;
+            .pic-perc-wrapper {
+                display: table;
+                width: 100%;
+                img {
+                    display: table-cell;
+                    width: 100%;
+                    height: 100%;
+                }
+                .ticker {
+                    position: relative;
+                    border-right: 23px solid transparent;
+                    background-clip: padding-box;
+                    display: table-cell;
+                    font-weight: bold;
+                    text-align: center;
+                    font-size: 26px;
+                    color: white;
+                    /*background-color: #D70010;*/
+                    vertical-align: middle;
+                    width: 50%;
+                    &:after {
+                        content: '';
+                        /*@include mini-css-triangle(right, #D70010, 10px);*/
+                        position: absolute;
+                        top: 15px;
+                        right: -10px;
+                        margin-right: -10px;
+                    }
+                    .number {
+                        position: relative;
+                        font-size: 36px;
+                        margin-top: -20px;
+
+                        &:before {
+                            content: "%";
+                            font-size: 0.5em;
+                            margin-left: -10px;
+                        }
+                        &:after {
+                            content: "\aאהבו";
+                            white-space: pre;
+                            font-size: 0.6em;
+                            position: absolute;
+                            top: 32%;
+                            right: 0;
+                            width: 100%;
+                            text-align: center;
+                        }
+                    }
+                    .text-wrapper-ticker {
+                        /*@include transform(rotate(-20deg));*/
+                        /*@include transform-origin(center);*/
+
+                        .text {
+                            line-height: 1;
+                            padding-bottom: 3px;
+                            font-size: 35px;
+                            display: inline-block;
+                            border-bottom: 2px solid white;
+                        }
+                    }
+                }
+            }
+            .text-wrapper {
+                width: calc(100% - 10px);
+                margin-top: 20px;
+                overflow: hidden;
+                padding: 5px;
+                height: 100px;
+                background-color: #DBDBDD;
+                .writer-name {
+                    color: #D70010;
+                    font-weight: bold;
+                }
+                .click-wrapper {
+                    display: none;
+                }
+            }
+        }
+        .positive-section{
+            .ticker {
+                background-color: #035178;
+                &:after{
+                 @include mini-css-triangle(right,  #035178, 10px);
+                }
+            }
+        }
+        .negative-section{
+            .ticker {
+                background-color:  #D70010;
+                &:after{
+                 @include mini-css-triangle(right,   #D70010, 10px);
+                }
+            }
+        }
+    }
+}
+@media (max-width: 400px) {
+   .rp-head-to-head-main-wrapper {
+        .opinion-title {
+            text-overflow: ellipsis;
+            max-height: 20px !important;
+            white-space: nowrap;
+            /*overflow: hidden;*/
+        }
+        .text {
+            font-size: 22px !important;
+        }
+        .number {
+            font-size: 23px !important;
+        }
+    }
+}
+@media (max-width: 700px) {
+    .pane-content {
+        .rp-head-to-head-main-wrapper {
+            background-color: transparent;
+            margin-bottom: 15px;
+            .top-section {
+                display: none;
+            }
+            .main-section {
+                margin-top: 60px;
+                width: 100%;
+                height: 100%;
+                display: block;
+                position: relative;
+                & > * {
+                    display: block !important;
+                }
+                .subject-section {
+                    position: absolute;
+                    width: 100%;
+                    padding-left: 0;
+                    padding-right: 0;
+                    top: -53px;
+                    .box-wrapper {
+                        position: relative;
+                        right: 0;
+                        left: 0;
+                        .subject-img {
+                            display: none;
+                        }
+                        .subject-title-wrapper {
+                            height: 47px;
+                            overflow: hidden;
+                            position: inherit;
+                            background-color: rgba(0, 0, 0, 0.5);
+                            color: white;
+                            display: block;
+                            margin: 0;
+                            width: 100%;
+                            .subject-title {
+                                font-size: 15px !important;
+                                &:before {
+                                    content: 'ראש בראש >> ';
+                                }
+                                max-height: 35px;
+                                overflow: hidden;
+                                padding: 5px;
+                                display: block;
+                                text-align: right;
+                                vertical-align: top;
+                            }
+                        }
+                    }
+                }
+                .negative-section,
+                .positive-section,
+                .subject-section {}
+                .negative-section,
+                .positive-section {
+                    margin-bottom: 5px;
+                    width: 100%;
+                    position: relative;
+                    .pic-perc-wrapper {
+                        max-height: 100px;                            
+                        display: table;
+                        width: 100%;
+                        img {
+                            float: right;
+                            width: 24%;
+                            display: block;
+                        }
+                        .ticker {
+                            &:after {
+                                display: none;
+                            }
+                            float: left;
+                            height: 100%;
+                            width: 24%;
+                            text-align: center;
+                            vertical-align: middle;
+                            border-right:0;
+                            display:table;
+                            .text-wrapper-ticker {
+                                vertical-align: middle;
+                                display: table-cell;
+                                .text {
+                                    display: inline-block;
+                                    border-bottom: 3px solid white;
+                                    width: 46px;
+                                    margin: 20px;
+                                }
+                            }
+                            .number {
+                                display: table-cell;
+                                vertical-align: middle;
+                                margin-top: 0;
+                                font-size: 30px;
+                                &:before {
+                                    content: "%";
+                                    margin-left: 0;
+                                }
+                                &:after {
+                                    font-size: 0.7em;
+                                    position: relative;
+                                    top: 0;
+                                    right: 0;
+                                    width: 100%;
+                                    /*text-align: center;*/
+                                }
+                            }
+                            font-weight: bold;
+                            text-align: center;
+                            font-size: 35px;
+                            color: white;
+                            /*background-color: #D70010;*/
+                            vertical-align: middle;
+                        }
+                    }
+                    .text-wrapper {
+                        width: calc(52% - 15px);
+                        position: absolute;
+                        top: 0;
+                        right: calc(24% - 1px);
+                        height: calc(100% - 10px);
+                        margin-top: 0px;
+                        overflow: hidden;
+                        padding: 5px;
+                        background-color: #DBDBDD;
+                        .writer-name {
+                            color: black;
+                            font-weight: bold;
+                        }
+                        .opinion-title {
+                           max-height: 39px;
+                           overflow: hidden;
+                           padding: 1px;
+                        }
+                        .click-wrapper {
+                            display: block;
+                            position: absolute;
+                            bottom: 0;
+                            left: 0;
+                            input {
+                                background: black;
+                                color: white;
+                                border: 0px solid;
+                                border-radius: 0px;
+                                font-weight: normal;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

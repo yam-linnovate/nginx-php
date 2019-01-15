@@ -1,0 +1,5 @@
+core = "7.x"
+description = "Republish main module."
+name = "Rp - main module"
+package = Republish
+core = 7.x

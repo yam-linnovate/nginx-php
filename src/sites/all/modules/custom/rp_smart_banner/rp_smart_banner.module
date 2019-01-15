@@ -1,0 +1,56 @@
+<?php
+
+function rp_smart_banner_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'page_manager' || $module == 'panels' || $module == 'ctools') {
+    return 'plugins/' . $plugin;
+  }
+}
+
+function rp_smart_banner_init() {
+    drupal_add_js(drupal_get_path('module', 'rp_smart_banner') . '/js/rp_smart_banner.js');
+}
+
+function rp_smart_banner_menu(){
+	$items['smart_banner/%/%'] = array(
+        'title' => 'smart_banner',
+        'page callback' => 'smart_banner',
+        'page arguments' => array(1,2),
+        'access arguments' => array('access content'),
+    );
+    $items['smart_banner_set_ios_info'] = array(
+        'title' => 'smart_banner_set_ios_info',
+        'page callback' => 'smart_banner_set_ios_info',
+        'access arguments' => array('access content'),
+    );
+    $items['smart_banner_set_android_info'] = array(
+        'title' => 'smart_banner_set_android_info',
+        'page callback' => 'smart_banner_set_android_info',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+function smart_banner($os, $timestamp) {
+    $output = '';
+    $time = new DateTime();
+    $time->setTimestamp(intval($timestamp));
+    $last_update_time = variable_get('smart_banner_last_update_' . $os .'_time');
+    $diff = $time->diff($last_update_time)->days;
+    if($diff > 6 || !$last_update_time) {
+        $output = 'expired';
+    } else {
+        $info = variable_get('smart_banner_' . $os . '_info');
+        $output .= $info;
+    }
+    return drupal_json_output(array('success' => true, 'data'=> $output));
+}
+
+function smart_banner_set_ios_info($params) {
+    variable_set('smart_banner_last_update_ios_time', new DateTime());
+    variable_set('smart_banner_ios_info', $params);
+}
+
+function smart_banner_set_android_info($params) {
+    variable_set('smart_banner_last_update_android_time', new DateTime());
+    variable_set('smart_banner_android_info', $params);
+}

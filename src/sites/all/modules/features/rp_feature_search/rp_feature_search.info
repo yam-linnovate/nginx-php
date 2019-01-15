@@ -1,0 +1,14 @@
+name = Rp - Feature Search
+core = 7.x
+package = Features
+dependencies[] = ctools
+dependencies[] = elasticsearch_connector
+dependencies[] = elasticsearch_connector_search_api
+dependencies[] = entity
+dependencies[] = rp_elasticsearch
+dependencies[] = search_api
+features[ctools][] = elasticsearch_connector:elasticsearch_connector_defaults:1
+features[elasticsearch_connector_cluster][] = elasticsearch_server
+features[features_api][] = api:2
+features[search_api_index][] = elasticsearch_index
+features[search_api_server][] = elasticsearch_server

@@ -1,0 +1,17 @@
+; Theme Info --------------------------------------------------------------
+
+name = Republish Admin Theme
+description = Republish Admin Theme, sub-theme for Shiny.
+screenshot = logo.png
+core = 7.x
+base theme = shiny
+
+; Theme specific styles ---------------------------------------------------
+
+stylesheets[all][] = stylesheets/republish_admin_theme.css
+
+; Theme Script Files ------------------------------------------------------
+
+scripts[] = scripts/republish_admin_theme.js
+scripts[] = scripts/less-info-text-formats.js
+

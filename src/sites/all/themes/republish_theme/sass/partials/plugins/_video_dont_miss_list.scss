@@ -1,0 +1,12 @@
+.pane-video-dont-miss-list {
+	.pane-content {
+		padding: 20px;
+		@include pane-title;
+		@include jcarousel();
+		.title {
+    		margin-top: 10px;
+		    max-height: 56px;
+		    overflow: hidden;
+    	}
+	}
+}

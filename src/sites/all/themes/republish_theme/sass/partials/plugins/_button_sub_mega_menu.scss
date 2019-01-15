@@ -1,0 +1,68 @@
+@include large{
+  .sub-mega-menu{
+    background: #141c25;
+    color: white;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 100px;
+    position: relative;
+    .panel-separator{
+      display: none;
+    }
+    a{
+      color: white;
+    }
+    > div{
+      padding: 10px;
+    }
+    .pane-button-sub-mega-menu{
+      justify-self: end;
+      padding: 0 30px;
+      position: absolute;
+      left: 0;
+      .pane-content{   
+        display: flex;
+        .button{
+          margin: 0 20px;
+          a{
+            bottom: 0;
+            background-color: $green;
+            padding: 3px 20px;
+            display: inline-block;
+            border-radius: 4px;
+            @include font_family_regular;
+            color: white;
+          }
+        }
+        .social-networks-sub-mega-menu{
+          display: flex;
+          div{
+            background: $gray;
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            display: flex;
+            margin: 0 3px;
+            a{
+              margin: 0 auto;
+              align-self: center;
+              text-align: center;
+              img {
+                max-width: 100%;
+              }
+            }
+          }
+          .email {
+            a {
+              img {
+                width: 60%;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

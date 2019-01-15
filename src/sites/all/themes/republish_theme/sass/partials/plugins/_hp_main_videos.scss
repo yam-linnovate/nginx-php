@@ -1,0 +1,274 @@
+@include large() {
+  .pane-hp-main-videos {
+    .delimiter {
+      display: none;
+    }
+    .pane-content {
+      @include pane_title_with_icon(15px, 30px, url(../images/tv_icon.jpg));
+      @include view_more_title();
+      overflow: auto;
+      .pane-title {
+        font-size: 32px;
+        line-height: 45px;
+        margin-bottom: 28px;
+        margin-left: 0;
+        padding: 0 59px 0 0;
+        background-size: initial;
+        border-bottom: 6px solid #2eacb4;
+        height: 46px;
+        span {
+          color: $green;
+          @include font_family_bold;
+          font-size: 33px;
+        }
+        span.view-more {
+          margin-top: 6px;
+          font-size: 16px;
+          @include font_family_regular;
+          color: #2eacb4;
+        }
+        &:before {
+          bottom: -2px;
+        }
+      }
+      @include large {
+        padding: 15px 24px 43px 21px;
+      }
+      .hp-videos-right {
+        float: right;
+        width: 48.5%;
+        vertical-align: top;
+        .large-article {
+          .section {
+            margin-right: 10px;
+            margin-top: 14px;
+            ul {
+              padding: 0;
+              margin: 0;
+              li {
+                display: block;
+                a {
+                  color: $green;
+                }
+              }
+            }
+          }
+          .field-name-field-front-page-title {
+            color: #222;
+            font-size: 25px;
+            line-height: 25px;
+            margin: 3px 10px 10px 0;
+            font-family: ShualRegular;
+            font-weight: 400;
+            max-height: 50px;
+            overflow: hidden;
+          }
+          .field-name-field-front-page-intro {
+            font-family: Arial;
+            color: #222;
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 22px;
+            margin-right: 10px;
+            margin-bottom: 13px;
+          }
+          .created {
+            color: $green;
+            font-family: Arial;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 22px;
+            margin-right: 10px;
+          }
+          &>a {
+            display: block;
+          }
+        }
+      }
+      .hp-videos-left {
+        float: left;
+        width: 47.7%;
+        .small-article {
+          border-bottom: 1px solid $light-green;
+          display: flex;
+          align-items: stretch;
+          justify-content: space-between;
+          overflow: auto;
+          padding: 18px 0 16px 0;
+          &:first-child {
+            padding-top: 0;
+          }
+          &:last-child {
+            border-bottom: none;
+          }
+          .section {
+            display: none;
+          }
+          .small-article-right {
+            float: right;
+            position: relative;
+            width: 56%;
+            vertical-align: top;
+            .section {
+              ul {
+                margin: 0;
+                padding: 0;
+                li {
+                  a {
+                    color: $green;
+                    display: block;
+                    font-family: Arial;
+                    font-size: 12px;
+                    line-height: 22px;
+                  }
+                }
+              }
+            }
+            .writer {
+              display: none;
+            }
+            .title {
+              color: #222;
+              font-family: ShualBold;
+              font-size: 21px;
+              font-weight: 400;
+              display: block;
+              line-height: 21px;
+              margin-bottom: 25px;
+              padding-left: 20px;
+              padding-top: 3px;
+              max-height: 50px;
+            }
+            .created {
+              font-family: arial;
+              color: $green;
+              font-size: 12px;
+              font-weight: 700;
+              line-height: 12px;
+              position: absolute;
+              bottom: 0;
+              right: 0;
+            }
+          }
+          .small-article-left {
+            float: left;
+            width: 43%;
+          }
+          hr {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include medium() {
+  .pane-hp-main-videos {
+    .pane-content {
+      .hp-videos-left {
+        .small-article {
+          .section {
+            display: none;
+          }
+          .small-article-right {
+            .title {
+              max-height: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@include small() {
+  .pane-hp-main-videos {
+    .delimiter {
+      display: none;
+    }
+    margin-bottom: 15px;
+    .pane-content {
+      @include pane_title_with_icon(15px, 30px, url(../images/tv_icon.jpg));
+      @include view_more_title();
+      background-color: white;
+      border-bottom: 1px solid $light-green;
+      overflow: auto;
+      .pane-title {
+        @include underlined_title_with_icon_mobile();
+        background: none;
+        border-top: 1px solid $light-green;
+        margin-bottom: 13px;
+        padding: 2px 10px 6px 10px;
+        .title-text {
+          background: url(../images/tv_icon.jpg) right no-repeat;
+          display: inline-block;
+          height: 100%;
+          padding-right: 50px;
+        }
+        span {
+          color: $green;
+          @include font_family_bold;
+          font-size: 28px;
+        }
+        @include view_more_title_mobile();
+        .view-more {
+          margin-top: 6px;
+          position: absolute;
+          top: 0;
+          left: 0;
+          &:after {
+            top: 20%;
+          }
+        }
+        &:after {
+          bottom: 2px;
+        }
+      }
+      .hp-videos-right {
+        display: none;
+      }
+      .hp-videos-left {
+        width: 100%;
+        .small-article {
+          display: flex;
+          flex-flow: column-reverse;
+          padding: 0;
+          .small-article-right {
+            width: 100%;
+            .section,
+            .writer,
+            .created {
+              display: none;
+            }
+            .title {
+              color: $black;
+              display: block;
+              @include font_family_bold;
+              font-size: 20px;
+              line-height: 1.1;
+              margin: 15px 0 31px 0;
+              margin-top: 10px;
+              padding: 0 10px;
+            }
+          }
+          .small-article-left {
+            width: 100%;
+          }
+          hr {
+            display: none;
+          }
+          &:last-child {
+            .small-article-right {
+              .title {
+                margin-bottom: 18px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+}

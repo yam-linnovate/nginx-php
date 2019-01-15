@@ -1,0 +1,5 @@
+core = "7.x"
+description = "Republish content types panes plugins module."
+name = "Rp - plugins"
+package = Republish
+core = 7.x

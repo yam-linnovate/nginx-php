@@ -1,0 +1,42 @@
+.pane-most-viewed-articles{
+    overflow: hidden;
+    padding: 10px 18px;
+    position: relative;
+    .pane-title{
+        @include font_family_bold;
+        &:before{
+            bottom: 7px;
+        }
+    }
+    .slick-arrow{
+        width: 106px;
+        height: 106px;
+        border-radius: 50%;
+        z-index: 1;
+        background: rgba(0, 0, 0, 0.65);
+    }
+    .slick-prev{
+        right: -46px;
+        left: auto;
+        .prev-arrow{
+            float: left;
+            margin: 45px 30px;
+        }
+        &:before{
+            display: none;
+        }
+    }
+    .slick-next {
+        left: -46px;
+        .next-arrow{
+            float: right;
+            margin: 45px 30px;
+        }
+        &:before{
+            display: none;
+        }
+    }
+    .title{
+        @include font_family_bold;
+    }
+}

@@ -1,0 +1,10 @@
+<?php
+
+function rp_google_analytics_install(){
+	$date = new DateTime();
+	$interval = new DateInterval('P1D');
+	$date->sub($interval);
+	variable_set('most_viewed_opinions_set_html_time', $date);
+	variable_set('most_viewed_videos_set_html_time', $date);
+	variable_set('most_viewed_articles_set_html_time', $date);
+}

@@ -1,0 +1,88 @@
+.panel-front .content-indent{
+	width: 1370px;
+    min-width: 1373px;
+	margin: 0 auto;
+}
+.panel-front .content-full-width{
+	width: 100%;
+}
+.top-content-front {
+    display: flex;
+    justify-content: space-between;
+}
+.panel-front .top-second{
+	float: right;
+    width: 76%;
+}
+.panel-front .top-third{
+	float: left;
+	width: 23%;
+}
+.panel-front .top-right{
+	width: 76%;
+	float: right;
+}
+.panel-front .top-left{
+	width: 23%;
+	float: left;
+}
+.panel-front .middle{
+	clear: both;
+}
+.panel-front .middle-first{
+    width: 76%;
+    float: right;
+}
+.panel-front .middle-second{
+	width: 23%;
+	float: left;
+}
+.panel-front .bottom{
+	clear: both;
+}
+.panel-front .middle-left{
+	width: 49.5%;
+	float: left;
+}
+.panel-front .middle-right{
+	width: 49.5%;
+	float: right;
+}
+@media(max-width: 1400px) and (min-width: 769px) {
+	.front.panel-layout-front #main-wrapper #main.content-indent {
+		width: 95%;
+	    min-width: 95%;
+		margin: 0 auto;
+		overflow: hidden;
+	}
+	.panel-front .top-second{
+	    width: 70%;
+	    margin: 0 0 0 1%;
+	}
+	.panel-front .top-third{
+		width: 28%;
+	}
+	.panel-front .middle-first{
+	    width: 70%;
+	    float: right;
+	    margin-left: 1%;
+	}
+	.panel-front .middle-second{
+		width: 28%;
+		float: right;
+	}
+	#footer div#footer-inner .footer-first-row {
+		width: 95%;
+	    min-width: 95%;
+		margin: 0 auto;
+	}
+}
+
+@media (max-width: 768px) {
+	.panel-front .unit {
+		float: none;
+		width: 100%;
+		margin: 0;
+	}
+
+}

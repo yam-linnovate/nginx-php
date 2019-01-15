@@ -1,0 +1,14 @@
+.panel-four-col-25{
+  width: 100%;
+}
+.panel-four-col-25 .content-indent{
+  display: flex;
+  justify-content: space-between;
+}
+.panel-four-col-25 .panel-panel{
+  float: right;
+}
+
+.panel-four-col-25 .panel-panel.four{
+  min-width: 280px
+}

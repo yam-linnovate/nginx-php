@@ -1,0 +1,606 @@
+<?php
+/**
+ * @file
+ * File containing the implemented hooks.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function social_stats_help($path, $arg) {
+  $help_text = '';
+  switch ($path) {
+    case 'admin/help#social_stats':
+      $help_text = '<p>' . t('This module provides an API to get the social statistics of the nodes of the selected content types. The data includes number of shares of a particular node on Facebook, LinkedIn, Google Plus. This module does a collection of data on cron run. Using modules like Elysia Cron this can be set to some convinient time (for e.g. once or twice a day).') . '</p><p>' . t('Use Social Stats Views module for integration of this data in the Views module : like sorting according to the number of shares, using the number of shares as a field, having a filter criteria with this data, etc.') . '</p>';
+      break;
+  }
+  return $help_text;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function social_stats_menu() {
+  $items['admin/config/services/social-stats'] = array(
+    'title' => 'Social Stats',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('social_stats_general_settings_form'),
+    'access arguments' => array('administer social stats content types'),
+    'file' => 'social_stats.admin.inc',
+  );
+  $items['admin/config/services/social-stats/general'] = array(
+    'title' => 'Social Stats',
+    'description' => 'Administrative settings for social stats module',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/config/services/social-stats/content-types'] = array(
+    'title' => 'Cron Settings',
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('social_stats_content_types_form'),
+    'access arguments' => array('administer social stats cron'),
+    'file' => 'social_stats.admin.inc',
+    'weight' => 1,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function social_stats_permission() {
+  return array(
+    'administer social stats content types' => array(
+      'title' => t('Administer Social Stats content type settings'),
+      'description' => t('Settings specific to the content type for Social Stats module.'),
+    ),
+    'administer social stats cron' => array(
+      'title' => t('Administer Social Stats cron settings'),
+      'description' => t('Cron settings for Social Stats module.'),
+    ),
+  );
+}
+
+/**
+ * Fetch the data from Facebook and save it to local table.
+ *
+ * @param $nodes Array
+ *   Contains minimal node objects keyed by nid. Passed by reference and updated
+ *   with a total count ->social_stats[service name].
+ */
+function _social_stats_facebook_multiple(&$nodes) {
+  $batch = array();
+  // Loop over each path to build batch query.
+  foreach ($nodes as $nid => $node) {
+    $query = array(
+      'id' => $node->node_path,
+      'fields' => 'og_object{engagement},share',
+    );
+    $wrapped_query = array(
+      'method' => "GET",
+      'relative_url' => '?' . http_build_query($query, '', '&'),
+    );
+    $batch[] = $wrapped_query;
+  }
+  $facebook_access_token = variable_get('social_stats_facebook_access_token', 0);
+  if ($facebook_access_token) {
+    $params = array(
+      'access_token' => $facebook_access_token,
+      'batch' => json_encode($batch),
+    );
+    $response = drupal_http_request('https://graph.facebook.com', array(
+      'method' => 'POST',
+      'data' => http_build_query($params, '', '&'),
+      'headers' => array("Content-Type" => "multipart/form-data"),
+    )
+    );
+    $graph_data = json_decode($response->data);
+
+    if (!empty($response->error)) {
+      watchdog(
+        t('Social Stats'),
+        'Problem with request to Facebook. Code: %errcode, Error: %err, Type: %type, Error: %message',
+        array(
+          '%err' => $response->status_message,
+          '%errcode' => $response->code,
+          '%type' => $graph_data->error->type,
+          '%message' => $graph_data->error->message,
+        ),
+        WATCHDOG_ERROR
+      );
+    }
+    else {
+      // Facebook guarantees that the results are returned in same order as
+      // requested, therefore we can use the order in the nodes array to get
+      // corresponding nids.
+      $ordered_node_list = $nodes;
+      foreach ($graph_data as $graph_data_row) {
+        $node = array_shift($ordered_node_list);
+        $facebook_data = json_decode($graph_data_row->body, TRUE);
+
+        if ($graph_data_row->code != '200') {
+          watchdog(
+            t('Social Stats'),
+            'Problem with retrieving data from Facebook for node ID (%nid). Code: %errcode, Type: %type, Error: %message',
+            array(
+              '%nid' => $node->nid,
+              '%errcode' => $graph_data_row->code,
+              '%type' => $facebook_data['type'],
+              '%message' => $facebook_data['message'],
+            ),
+            WATCHDOG_ERROR
+          );
+        }
+        else {
+          $no_likes = intval($facebook_data['og_object']['engagement']['count']);
+          $no_comments = intval($facebook_data['share']['comment_count']);
+          $no_share = intval($facebook_data['share']['share_count']) - $no_likes;
+          $total_count = $no_likes + $no_comments + $no_share;
+          // Only update table if counter > 0
+          if ($total_count) {
+            // @TODO Update every row in one query.
+            db_merge('social_stats_facebook')
+              ->key(array('nid' => $node->nid))
+              ->fields(array(
+                'fb_likes' => $no_likes,
+                'fb_shares' => $no_share ,
+                'fb_comments' => $no_comments,
+                'fb_total' => $total_count,
+                'changed' => REQUEST_TIME,
+              ))
+              ->execute();
+            $nodes[$node->nid]->social_stats['Facebook'] = $total_count;
+          }
+        }
+      }
+    }
+  }
+  else {
+    watchdog(t('Social Stats'), 'Facebook Access Token not set. Get an access token from facebook of type "App Token". See https://developers.facebook.com/tools/accesstoken for documentation.', array(), WATCHDOG_ERROR);
+  }
+}
+
+/**
+ * Fetch the data from LinkedIn and save it to local table.
+ *
+ * @param array $node
+ *   Contains $node->nid.
+ * @param string $node_path
+ *   The URL alias.
+ */
+function _social_stats_linkedin_multiple(&$nodes) {
+  foreach ($nodes as &$node) {
+    $node_path = $node->node_path;
+
+    $linkedin_shares = 0;
+
+    // Write a query to fetch the data from LinkedIn.
+    $linkedin_query = 'http://www.linkedin.com/countserv/count/share?';
+    $linkedin_query .= 'format=json&url=' . $node_path;
+    $linkedin_response = drupal_http_request($linkedin_query);
+
+    if (!empty($linkedin_response->error)) {
+      watchdog(t('Social Stats'),
+        'Problem updating data from LinkedIn for %node_path. Error: %err',
+        array('%node_path' => $node_path, '%err' => $linkedin_response->error),
+        WATCHDOG_ERROR);
+    }
+    else {
+      $linkedin_data = json_decode($linkedin_response->data);
+
+      // Only update table if counter > 0
+      $linkedin_shares = intval($linkedin_data->count);
+      if ($linkedin_shares) {
+        db_merge('social_stats_linkedin')
+          ->key(array('nid' => $node->nid))
+          ->fields(array(
+            'linkedin_shares' => $linkedin_shares,
+            'changed' => REQUEST_TIME,
+          ))
+          ->execute();
+      }
+    }
+    $node->social_stats['LinkedIn'] = $linkedin_shares;
+  }
+}
+
+/**
+ * Fetch the data from Google+ and save it to local table.
+ *
+ * @param array $node
+ *   Contains $node->nid.
+ * @param string $node_path
+ *   The URL alias.
+ */
+function _social_stats_googleplus_multiple(&$nodes) {
+  foreach ($nodes as &$node) {
+    $node_path = $node->node_path;
+
+    $gplus_plusone_count = _social_stats_googleplus_plusone($node_path);
+    $gplus_share_count = _social_stats_googleplus_share($node_path);
+
+    // Only update table if counter > 0
+    if ($gplus_plusone_count || $gplus_share_count) {
+      db_merge('social_stats_gplus')
+        ->key(array('nid' => $node->nid))
+        ->fields(
+          array(
+            'plusone' => $gplus_plusone_count,
+            'share' => $gplus_share_count,
+            'changed' => REQUEST_TIME,
+          )
+        )
+        ->execute();
+    }
+    $node->social_stats['Google Plus'] = $gplus_plusone_count;
+  }
+}
+
+/**
+ * Function returning the number of times the node was +1ed.
+ */
+function _social_stats_googleplus_plusone($node_path) {
+  $gplus_like_count = 0;
+
+  // Build the JSON data for the API request.
+  $data['method'] = 'pos.plusones.get';
+  $data['id'] = 'p';
+  $data['params']['nolog'] = TRUE;
+  $data['params']['id'] = $node_path;
+  $data['params']['source'] = 'widget';
+  $data['params']['userId'] = '@viewer';
+  $data['params']['groupId'] = '@self';
+  $data['jsonrpc'] = '2.0';
+  $data['key'] = 'p';
+  $data['apiVersion'] = 'v1';
+
+  $url = 'https://clients6.google.com/rpc?key=AIzaSyCKSbrvQasunBoV16zDH9R33D88CeLr9gQ';
+  $options['data'] = json_encode($data);
+  $options['method'] = 'POST';
+  $options['headers']['Content-Type'] = 'application/json';
+
+  $request = drupal_http_request($url, $options);
+
+  if (!empty($request->error) || empty($request->data)) {
+    watchdog(t('Social Stats'),
+      'Problem updating data from Google+ for %node_path. Error: %err',
+      array('%node_path' => $node_path, '%err' => $request->error),
+      WATCHDOG_ERROR);
+  }
+  else {
+    $request->data = json_decode($request->data);
+    if (isset($request->data->result->metadata->globalCounts->count)) {
+      $gplus_like_count = intval($request->data->result->metadata->globalCounts->count);
+    }
+  }
+  return $gplus_like_count;
+}
+
+/**
+ * Function returning the number of times the node was shared.
+ */
+function _social_stats_googleplus_share($node_path) {
+  $gplus_share_count = 0;
+
+  $data = "f.req=%5B%22" . $node_path . "%22%2Cnull%5D&";
+  $url = "https://plus.google.com/u/0/ripple/update";
+
+  $response = drupal_http_request($url, array(
+    'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
+    'data' => $data,
+    'method' => 'POST',
+  ));
+
+  $response->data = substr($response->data, 6);
+  $response->data = str_replace(",,", ",null,", $response->data);
+  $response->data = str_replace(",,", ",null,", $response->data);
+  $result = json_decode($response->data, TRUE);
+
+  $gplus_share_count = $result[0][1][4];
+  return $gplus_share_count;
+}
+
+/**
+ * The queue worker function to update the data.
+ */
+function _social_stats_update($batch) {
+  $counts = array();
+  // Get services config.
+  $services = _social_stats_get_services();
+
+  // Check if arg is single object for legacy compatability.
+  if (!is_array($batch)) {
+    $node_type_services = variable_get('social_stats_' . $batch->type);
+    $batch = array(
+      'items' => array($batch->nid => $batch),
+      'unfetched_services' => array_filter($node_type_services),
+    );
+  }
+
+  // Filter out only the services we need to fetch.
+  $services = array_intersect_key($services, $batch['unfetched_services']);
+  // Get the maximum amount of items any unfetched service can handle.
+  $service_max = _social_stats_get_services_max($services);
+  $batch_count = count($batch['items']);
+
+  // Check if there are services that can handle this many items.
+  if ($batch_count <= $service_max && $services) {
+    // Populate node_paths.
+    _social_stats_get_paths($batch['items']);
+
+    foreach ($services as $name => $service) {
+      // Fetch counts for each service that can handle this many items.
+      if ($batch_count <= $service['fetch_max']) {
+
+        // Fetch count for service.
+        $callback = $service['fetch_multiple_callback'];
+        $callback($batch['items']);
+
+        // Prevent service from fetching again for this batch.
+        unset($batch['unfetched_services'][$name]);
+        unset($services[$name]);
+      }
+    }
+
+    foreach ($batch['items'] as $item) {
+      $count_total = 0;
+
+      // Adding the total data from all services to get total virality.
+      if ((!empty($item->social_stats)) && ($item->social_stats != NULL)) {
+        $count_total = array_sum($item->social_stats);
+      }
+
+      db_merge('social_stats_total')
+        ->key(array('nid' => $item->nid))
+        ->fields(array(
+          'total_virality' => $count_total,
+          'changed' => REQUEST_TIME,
+          'queued' => 0,
+        ))
+        ->execute();
+    }
+  }
+
+  if (!empty($batch['unfetched_services'])) {
+    // We have services left and too many items in this batch to fetch them.
+    // Get the maximum amount of items any unfetched service can handle.
+    $service_max = _social_stats_get_services_max($services);
+
+    // Strip out node_paths before saving to queue for space saving.
+    _social_stats_unset_paths($batch['items']);
+
+    // Subdivide batch into chunks that the service with highest max count
+    // can handle.
+    $new_batches = _social_stats_batch_split($batch['items'], $service_max);
+    $queue = DrupalQueue::get('social_stats_update_stats');
+    foreach ($new_batches as $new_batch) {
+      // Create new queue job with batch.
+      $queue->createItem(array(
+        'items' => $new_batch,
+        'unfetched_services' => $batch['unfetched_services'],
+      ));
+    }
+  }
+}
+
+/**
+ * Populate node_path for every node in batch.
+ *
+ * @param $batch
+ */
+function _social_stats_get_paths(&$batch) {
+  // Create absolute node path using the node path.
+  global $base_url;
+  $node_path_root = variable_get('social_stats_url_root', $base_url);
+  foreach ($batch as &$node) {
+    $node->node_path = $node_path_root . url('node/' . $node->nid);
+  }
+}
+
+/**
+ * Remove node_path from object for space saving.
+ *
+ * @param $batch
+ */
+function _social_stats_unset_paths(&$batch) {
+  foreach ($batch as &$node) {
+    unset($node->node_path);
+  }
+}
+
+/**
+ * Get the maximum amount of items any service can handle.
+ *
+ * @param $services
+ * @return mixed
+ */
+function _social_stats_get_services_max($services) {
+  $max = 1;
+  foreach ($services as $service) {
+    $max = ($service['fetch_max'] > $max) ? $service['fetch_max'] : $max;
+  }
+  return $max;
+}
+
+/**
+ * Return info on available services.
+ */
+function _social_stats_get_services() {
+  $services['Facebook'] = array(
+    'fetch_max' => 50,
+    'fetch_multiple_callback' => '_social_stats_facebook_multiple',
+    'count_key' => 'facebook_total',
+  );
+  $services['LinkedIn'] = array(
+    'fetch_max' => 1,
+    'fetch_multiple_callback' => '_social_stats_linkedin_multiple',
+    'count_key' => 'linkedin_shares',
+  );
+  $services['Google Plus'] = array(
+    'fetch_max' => 1,
+    'fetch_multiple_callback' => '_social_stats_googleplus_multiple',
+    'count_key' => 'google_plusone',
+  );
+
+  // Let other modules modify or add services.
+  drupal_alter('social_stats_services', $services);
+
+  return $services;
+}
+
+/**
+ * Implements hook_cron_queue_info().
+ */
+function social_stats_cron_queue_info() {
+  $queues['social_stats_update_stats'] = array(
+    'worker callback' => '_social_stats_update',
+    'time' => variable_get('social_stats_cron_duration', 300),
+  );
+  return $queues;
+}
+
+/**
+ * Implements hook_cron().
+ */
+function social_stats_cron() {
+  $interval = variable_get('social_stats_cron_interval', 60 * 60 * 24);
+  if (REQUEST_TIME >= variable_get('social_stats_next_execution', 0)) {
+    variable_set('social_stats_next_execution', REQUEST_TIME + $interval);
+
+    // Get list of content types in the site.
+    $node_types = node_type_get_types();
+    $content_types_config_digests = array();
+    $services = array();
+    foreach ($node_types as $types) {
+      $node_type_services = variable_get('social_stats_' . $types->type);
+      $node_type_services_filtered = array_filter($node_type_services);
+      if (!empty($node_type_services_filtered)) {
+        // Create a digest of this config to group batches on.
+        $config_digest = drupal_hash_base64(json_encode($node_type_services));
+        $content_types_config_digests[$types->type] = $config_digest;
+        $services[$config_digest] = $node_type_services_filtered;
+      }
+    }
+    // Get an array of all content types with enabled services.
+    $content_types = array_keys($content_types_config_digests);
+
+    // Only proceed if any node types have enabled services.
+    if (!empty($content_types)) {
+      $start_date = '';
+      $social_stats_options = variable_get('social_stats_options', 0);
+      if ($social_stats_options == 0) {
+        $start_date = variable_get('social_stats_start_date', '01/01/1970');
+      }
+      elseif ($social_stats_options == 1) {
+        $start_date = variable_get('social_stats_date_offset', '-100 days');
+      }
+
+      $start_date = strtotime($start_date);
+      // Fetch node id and type for the content types,
+      // which has at least one social media selected,
+      // is created after the date mentioned in module's configuration,
+      // and isn't already in the queue
+      // sort first by longest ago updated social stats,
+      // then by most recently created.
+      $query = db_select('node', 'n');
+      $query->leftJoin('social_stats_total', 'sst', 'n.nid = sst.nid');
+      $query->leftJoin('social_stats_facebook', 'ssf', 'n.nid = ssf.nid');
+      $query->leftJoin('social_stats_gplus', 'ssg', 'n.nid = ssg.nid');
+      $query->leftJoin('social_stats_linkedin', 'ssli', 'n.nid = ssli.nid');
+      $query->fields('n', array('nid', 'type'));
+      $query->fields('ssf', array('fb_total'));
+      $query->fields('ssg', array('plusone'));
+      $query->fields('ssli', array('linkedin_shares'));
+      $query->condition('n.type', empty($content_types) ? '0' : $content_types);
+      $query->condition('n.created', $start_date, '>=');
+      $query->condition('n.status', 1);
+      $query_or = db_or()
+          ->condition('sst.queued', 0)
+          ->condition('sst.queued', NULL);
+      $query->condition($query_or);
+      $query->orderBy('sst.changed');
+      $query->orderBy('n.created', 'DESC');
+      $result = $query->execute();
+
+      $queue = DrupalQueue::get('social_stats_update_stats');
+
+      $batches = array();
+
+      // Group results on service config combination.
+      while ($record = $result->fetchObject()) {
+        $record->social_stats = array(
+          'Facebook' => (!empty($record->fb_total)) ? ($record->fb_total) : 0,
+          'Google Plus' => (!empty($record->plusone)) ? ($record->plusone) : 0,
+          'LinkedIn' => (!empty($record->linkedin_shares)) ? ($record->linkedin_shares) : 0,
+        );
+        $config_digest = $content_types_config_digests[$record->type];
+        $batches[$config_digest][$record->nid] = $record;
+        db_merge('social_stats_total')
+          ->key(array('nid' => $record->nid))
+          ->fields(array('queued' => 1))
+          ->execute();
+      }
+
+      foreach ($batches as $config_digest => $batch_items) {
+        // Get services for this node type.
+        $node_type_services = $services[$config_digest];
+        $batch = array(
+          'items' => $batch_items,
+          'unfetched_services' => $node_type_services,
+        );
+        // Push all items to single queue entry where it will be subdivided.
+        $queue->createItem($batch);
+      }
+    }
+  }
+}
+
+/**
+ * Split batch into even chunks of max $max items.
+ *
+ * @param $items
+ * @param int $max
+ * @return array
+ */
+function _social_stats_batch_split($items, $max = 1) {
+  // Divide items evenly in batches.
+  $total_count = count($items);
+  $num_batches = ceil($total_count / $max);
+  $max = ceil($total_count / $num_batches);
+
+  $batch = array();
+  $batches = array();
+  foreach ($items as $item) {
+    $batch[$item->nid] = $item;
+    // Push max num items to queue.
+    if (count($batch) == $max) {
+      $batches[] = $batch;
+      // reset.
+      $batch = array();
+    }
+  }
+  if (count($batch)) {
+    $batches[] = $batch;
+  }
+  return $batches;
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function social_stats_node_delete($node) {
+  // Delete all the social data on node deletion.
+  db_delete('social_stats_facebook')
+    ->condition('nid', $node->nid)
+    ->execute();
+  db_delete('social_stats_linkedin')
+    ->condition('nid', $node->nid)
+    ->execute();
+  db_delete('social_stats_gplus')
+    ->condition('nid', $node->nid)
+    ->execute();
+  db_delete('social_stats_total')
+    ->condition('nid', $node->nid)
+    ->execute();
+}

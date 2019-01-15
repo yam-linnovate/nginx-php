@@ -1,0 +1,93 @@
+.panel-threecol-stacked .content-indent{
+	width: 1370px;
+    min-width: 1373px;
+	margin: 0 auto;
+}
+.panel-threecol-stacked .content-full-width{
+	width: 100%;
+}
+.panel-threecol-stacked .top-first{
+	width: 22%;
+	float: right;
+}
+.panel-threecol-stacked .top-second{
+    width: 54%;
+    float: right;
+    margin: 0 1%;
+}
+.panel-threecol-stacked .top-third{
+	width: 22%;
+	float: right;
+}
+.panel-threecol-stacked .top-right{
+	width: 77%;
+	clear: both;
+	float: right;
+	margin-left: 1%;
+}
+.panel-threecol-stacked .top-left{
+	width: 22%;
+	float: right;
+}
+.panel-threecol-stacked .middle{
+	clear: both;
+}
+.panel-threecol-stacked .middle-first{
+    width: 77%;
+    float: right;
+    margin-left: 1%;
+}
+.panel-threecol-stacked .middle-second{
+	width: 22%;
+	float: right;
+}
+.panel-threecol-stacked .bottom{
+	clear: both;
+}
+
+@media(max-width: 1400px) and (min-width: 769px) {
+	.not-front.panel-layout-threecol-stacked #main-wrapper #main.content-indent {
+		width: 95%;
+	    min-width: 95%;
+		margin: 0 auto;
+	}
+	.panel-threecol-stacked .top-second{
+	    width: 70%;
+	    margin: 0 0 0 1%;
+	}
+	.panel-threecol-stacked .top-third{
+		width: 28%;
+	}
+	.panel-threecol-stacked .middle-first{
+	    width: 70%;
+	    float: right;
+	    margin-left: 1%;
+	}
+	.panel-threecol-stacked .middle-second{
+		width: 28%;
+		float: right;
+	}
+	.panel-threecol-stacked .top-right{
+		width: 70%;
+	    float: right;
+	    margin-left: 1%;
+	}
+	.panel-threecol-stacked .top-left{
+		width: 28%;
+		float: left;
+	}
+	#footer div#footer-inner .footer-first-row {
+		width: 95%;
+	    min-width: 95%;
+		margin: 0 auto;
+	}
+}
+
+@media (max-width: 768px) {
+	.panel-threecol-stacked .unit {
+		float: none;
+		width: 100%;
+		margin: 0;
+	}
+
+}

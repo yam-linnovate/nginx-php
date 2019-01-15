@@ -1,0 +1,18 @@
+name = BxSlider 
+description = BxSlider - Integration
+core = 7.x
+package = custom
+
+dependencies[] = views
+dependencies[] = libraries
+
+files[] = bxslider.functions.php
+files[] = bxslider.module
+
+files[] = field_formatter/bxslider_field_formatter.formatter.inc
+
+files[] = view_field/bxslider_view_field.inc
+files[] = view_field/bxslider_handler_view_field.inc
+
+files[] = view_format/bxslider.views.inc
+files[] = view_format/bxslider_views_plugin_style.inc

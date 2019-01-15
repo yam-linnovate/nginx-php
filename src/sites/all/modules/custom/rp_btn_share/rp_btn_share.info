@@ -1,0 +1,5 @@
+ame = Button share
+description = Provide the Button share Services: Twitter, Facebook, Whatsapp, Email
+core = 7.x
+package = Service Links - Services
+dependencies[] = service_links

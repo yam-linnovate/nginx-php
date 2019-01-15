@@ -1,0 +1,5 @@
+core = "7.x"
+description = "Republish Newsflash."
+name = "Rp - Newsflash"
+package = Republish
+core = 7.x

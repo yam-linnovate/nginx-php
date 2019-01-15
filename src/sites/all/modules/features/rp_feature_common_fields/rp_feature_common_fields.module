@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Rp - Feature Common Fields feature.
+ */
+
+include_once 'rp_feature_common_fields.features.inc';

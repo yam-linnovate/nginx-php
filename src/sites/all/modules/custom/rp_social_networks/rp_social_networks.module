@@ -1,0 +1,8 @@
+<?php
+
+
+function rp_social_networks_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'page_manager' || $module == 'panels' || $module == 'ctools') {
+    return 'plugins/' . $plugin;
+  }
+}

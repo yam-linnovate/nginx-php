@@ -1,0 +1,254 @@
+@include large() {
+  .pane-jobs-company {
+    .companies-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      margin-top: 38px;
+      .view-all-button {
+        background-color: $green;
+        border-radius: 4px;
+        color: white;
+        display: inline-block;
+        font-family: Heebo-Medium;
+        font-size: 14px;
+        line-height: 30px;
+        padding: 0 12px;
+      }
+    }
+    h2,
+    h1 {
+      color: #1a1a1a;
+      font-family: Heebo-ExtraBold;
+      font-size: 24px;
+      font-weight: normal;
+      line-height: 1;
+      margin: 0;
+    }
+  }
+  .views-companys{
+    margin-bottom: 45px;
+    & * {
+      box-sizing: border-box;
+    }
+    display: flex;
+    justify-content: space-between;
+    .view-company{
+      background-color: white;
+      box-shadow: #b0b0b0 0px 0px 10px;
+      min-height: 126px;
+      width: 47%;
+      .company-left {
+        justify-content: center;
+        float: left;
+        height: 100%;
+        padding-left: 10px;
+        padding-right: 14px;
+        width: 64%;
+      }
+      .img-company{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        float: right;
+        height: 100%;
+        overflow: hidden;
+        width: 36%;
+        img {
+          height: 126px;
+          width: auto;
+        }
+      }
+      .company-name{
+        padding-bottom: 4px;
+        padding-top: 22px;
+        h3{
+          font-family: Heebo-Medium;
+          font-size: 21px;
+          margin: 0;
+        }
+      }
+      .center-company{
+        display: flex;
+        justify-content: flex-start;
+        font-family: Heebo-Light;
+        font-size: 14px;
+        margin-bottom: 6px;
+        .company-employee{
+          background-image: url('/sites/all/themes/republish_theme/images/people.png');
+          background-position: left center;
+          background-repeat: no-repeat;
+          margin-right: 7px;
+          padding: 0 0 0 25px;
+        }
+        .company-kind-of-bussiness{
+          background-image: url('/sites/all/themes/republish_theme/images/house.png');
+          background-position: left center;
+          background-repeat: no-repeat;
+          padding: 0 0 0 19px;
+        }
+      }
+      .company-location{
+        background-image: url('/sites/all/themes/republish_theme/images/geolocation.png');
+        background-position: right 2px;
+        background-repeat: no-repeat;
+        float: right;
+        font-family: Heebo-Light;
+        font-size: 14px;
+        line-height: 1.7;
+        padding: 0 20px 0 0;
+      }
+    }
+  }
+}
+
+@include small() {
+  .pane-jobs-company {
+    .companies-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      margin-top: 21px;
+      .view-all-button {
+        background-color: $green;
+        border-radius: 4px;
+        color: white;
+        display: inline-block;
+        font-family: Heebo-Medium;
+        font-size: 14px;
+        line-height: 30px;
+        padding: 0 12px;
+      }
+    }
+    h2 {
+      color: #1a1a1a;
+      @include font_family_bold;
+      font-size: 23px;
+      font-weight: normal;
+      line-height: 1;
+      margin: 0 9px 0 0;
+    }
+    .slick-arrow{
+      border-radius: 0;
+      width: 20px;
+      height: 31px;
+      z-index: 9;
+    }
+    .slick-next {
+      left: 15px;
+      &:active, &:hover,  &:focus {
+        box-shadow: none;
+      }
+    }
+    .slick-prev {
+      right: 15px;
+      &:active, &:hover,  &:focus {
+        box-shadow: none;
+      }
+    }
+    .slick-next:before{
+      background-image: url('/sites/all/themes/republish_theme/images/left.png');
+      background-repeat: no-repeat;
+      content: '' !important;
+      display: block;
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+    }
+    .slick-prev:before{
+      background-image: url('/sites/all/themes/republish_theme/images/right.png');
+      background-repeat: no-repeat;
+      content: '' !important;
+      display: block;
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .views-companys{
+    margin-bottom: 31px;
+    & * {
+      box-sizing: border-box;
+    }
+    display: flex;
+    justify-content: space-between;
+    box-shadow: #c6c6c6 0px 1px 3px 2px;
+    .view-company{
+      background-color: white;
+      box-shadow: #b0b0b0 0px 0px 10px;
+      min-height: 107px;
+      width: 47%;
+      display: flex !important;
+      flex-flow: row;
+      justify-content: center;
+      align-items: center;
+      .company-left {
+        justify-content: center;
+        float: left;
+        height: 100%;
+        padding-left: 10px;
+        padding-right: 14px;
+        width: 74%;
+        line-height: 20px;
+      }
+      .img-company{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        float: right;
+        height: 68px;
+        overflow: hidden;
+        width: 17%;
+        margin-right: 40px;
+        img {
+          height: 126px;
+          width: auto;
+        }
+      }
+      .company-name{
+        padding-bottom: 0px;
+        margin-top: -10px;
+        h3{
+          @include font_family_regular;
+          font-weight: 600;
+          font-size: 19px;
+          margin: 0;
+        }
+      }
+      .center-company{
+        display: flex;
+        justify-content: flex-start;
+        @include font_family_regular;
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 0px;
+        .company-employee{
+          background-image: url('/sites/all/themes/republish_theme/images/people.png');
+          background-position: right center;
+          background-repeat: no-repeat;
+          margin-right: 7px;
+          padding: 0 25px 0 0;
+        }
+        .company-kind-of-bussiness{
+          background-image: url('/sites/all/themes/republish_theme/images/house.png');
+          background-position: right center;
+          background-repeat: no-repeat;
+          padding: 0 19px 0 0;
+        }
+      }
+      .company-location{
+        background-image: url('/sites/all/themes/republish_theme/images/geolocation.png');
+        background-position: right 2px;
+        background-repeat: no-repeat;
+        float: right;
+        font-weight: 600;
+        @include font_family_regular;
+        font-size: 16px;
+        line-height: 1.7;
+        padding: 0 20px 0 0;
+      }
+    }
+  }
+}

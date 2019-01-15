@@ -1,0 +1,89 @@
+@include large() {
+  .pane-last-articles {
+    .view-content {
+      padding-bottom: 12px;
+    }
+    .views-row{
+      margin-bottom: 14px;
+      .views-field-field-front-page-title {
+        padding: 10px 20px 0 30px;
+        max-height: 72px;
+        overflow: hidden;
+        a {
+          color: #222;
+          font-family: ShualBold;
+          font-size: 20px;
+          font-weight: 400;
+          line-height: 20px;
+        }
+      }
+      .views-field-field-writer {
+        margin-right: 30px;
+        font-size: 14px;
+        font-family: Arial;
+        border-left: 1px solid $fade-gray;
+        padding-left: 5px;
+        display: inline-block;
+        a{
+          color: $fade-gray;
+          font-family: arial;
+        }
+      }
+      .views-field-created {
+        color: $green;
+        display: inline-block;
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+@include small() {
+  .pane-last-articles {
+    background-color: white;
+    border-bottom: 1px solid $light_green;
+    border-top: 1px solid $light_green;
+    overflow: auto;
+    .pane-title {
+      @include underlined_title_mobile();
+    }
+    .views-field-field-writer,
+    .views-field-created {
+      display: none;
+    }
+    .view-content {
+      padding: 0 5px;
+      .views-row {
+        float: left;
+        margin-bottom: 25px;
+        padding: 0 5px;
+        width: 50%;
+        .views-field-field-front-page-title {
+          max-height: none;
+          padding: 10px 0 0 0;
+          a {
+            color: $black;
+            display: block;
+            @include font_family_bold;
+            font-size: 15px;
+            line-height: 1;
+          }
+        }
+        &:nth-child(1) {
+          border-bottom: 1px solid $light-green;
+          margin: 0 -5px 25px -5px;
+          padding: 15px 0;
+          width: calc(100% + 10px);
+          .views-field-field-front-page-title {
+            max-height: none;
+            padding: 3px 10px 5px 10px;
+            a {
+              font-size: 18px;
+              line-height: 1.1;
+            }
+          }
+        }
+      }
+    }
+  }
+}

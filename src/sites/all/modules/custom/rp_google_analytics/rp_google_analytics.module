@@ -1,0 +1,195 @@
+<?php
+
+
+function rp_google_analytics_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'page_manager' || $module == 'panels' || $module == 'ctools') {
+    return 'plugins/' . $plugin;
+  }
+}
+
+function rp_google_analytics_init() {
+    drupal_add_js(drupal_get_path('module', 'rp_google_analytics') . '/js/rp_google_analytics.js');
+}
+
+function rp_google_analytics_menu(){
+	$items['most_viewed_videos'] = array(
+        'title' => 'Most Viewed Videos',
+        'page callback' => 'most_viewed_videos_build_html',
+        'access arguments' => array('access content'),
+    );
+    $items['most_viewed_articles'] = array(
+        'title' => 'Most Viewed Articles',
+        'page callback' => 'most_viewed_articles_build_html',
+        'access arguments' => array('access content'),
+    );
+    $items['most_viewed_opinions'] = array(
+        'title' => 'Most Viewed Opinions',
+        'page callback' => 'most_viewed_opinions_build_html',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+
+function most_viewed_videos_build_html(){
+    $output = '';
+    if(empty($params)){
+        $params = drupal_get_query_parameters();
+    }
+    $time = new DateTime();
+    $time->setTimestamp($params['time']);
+    $last_update_time = variable_get('most_viewed_videos_set_html_time');
+    $diff = $time->diff($last_update_time)->days;
+    if($diff == '0'){
+        $output = variable_get('most_viewed_videos_html', '');
+        if($api){
+            $content = variable_get('most_viewed_articles_api', array());
+        }
+    }
+    else {
+        $view = most_viewed_get_view('block_1');
+        if(isset($view->result)){
+            $output .= '<div class="video-wrapper">';
+            $index = 0;
+            foreach ($view->result as $key => $result) {
+                if($index < 6) {
+                    $url = $result->pagePath;
+                    $url = substr($url, 1);
+                    $path = drupal_lookup_path('source', $url);
+                    if ($path){
+                        $node = menu_get_object('node', 1, $path);
+                        $node = node_view($node, 'hp_midi_article');
+                        $output .= render($node);
+                        $content['url'][$key] = $path;
+                        $content->node_id[$key] = $node->nid;
+                        $index++;
+                    }
+                }
+            }
+            $output .= '</div>';
+        }
+        variable_set('most_viewed_videos_api', $content);
+        variable_set('most_viewed_videos_html', $output);
+        variable_set('most_viewed_videos_set_html_time', new DateTime());
+    }
+    if ($api){
+        return $content;
+    }
+    return  drupal_json_output(array('success' => true, 'data'=> $output));
+}
+
+function most_viewed_articles_build_html($params, $api){
+    $output = '';
+    if(empty($params)){
+        $params = drupal_get_query_parameters();
+    }
+    $time = new DateTime();
+    $time->setTimestamp($params['time']);
+    $last_update_time = variable_get('most_viewed_articles_set_html_time');
+    $diff = $time->diff($last_update_time)->days;
+    if($diff == 0){
+        $output = variable_get('most_viewed_articles_html', '');
+        if($api){
+            $content = variable_get('most_viewed_articles_api', array());
+        }
+    }
+    else {
+        $index = 1;
+        $view = most_viewed_get_view('block');
+        if(isset($view->result)){
+            foreach ($view->result as $key => $result) {
+                $url = $result->pagePath;
+                $url = substr($url, 1);
+                $path = drupal_lookup_path('source', $url);
+                $node = menu_get_object('node', 1, $path);
+                if($node){
+                    $node = node_view($node, 'hp_small_article');
+                    $output .= '<div class="article-wrapper">';
+                    $output .= render($node);
+                    $output .= '<div class="index">' . $index . '</div></div>';
+                    $index = $index + 1;
+                    $content['url'][$key] = $path;
+                    $content->node_id[$key] = $node->nid;
+                }
+            }
+        }
+        variable_set('most_viewed_articles_api', $content);
+        variable_set('most_viewed_articles_html', $output);
+        variable_set('most_viewed_articles_set_html_time', new DateTime());
+    }
+    if ($api){
+        return $content;
+    }
+    return  drupal_json_output(array('success' => true, 'data'=> $output));
+}
+
+
+function most_viewed_opinions_build_html($params, $api){
+    $output = '';
+    if(empty($params)){
+        $params = drupal_get_query_parameters();
+    }
+    $time = new DateTime();
+    $time->setTimestamp($params['time']);
+    $last_update_time = variable_get('most_viewed_opinions_set_html_time');
+    $diff = $time->diff($last_update_time)->days;
+    if($diff == '0'){
+        $output = variable_get('most_viewed_opinions_html', '');
+        if($api){
+            $content = variable_get('most_viewed_opinions_api', array());
+        }
+    }
+    else {
+        $view = most_viewed_get_view('block_2');
+        if(isset($view->result)){
+            foreach ($view->result as $key => $result) {
+                $url = $result->pagePath;
+                $url = substr($url, 1);
+                $path = drupal_lookup_path('source', $url);
+                $node = menu_get_object('node', 1, $path);
+                $output .= rp_google_analytics_most_viewed_opinions_render_item($node);
+                $content->url[$key] = $path;
+                $content->node_id[$key] = $node->nid;
+
+            }
+        }
+        variable_set('most_viewed_opinions_api', $content);
+        variable_set('most_viewed_opinions_html', $output);
+        variable_set('most_viewed_opinions_set_html_time', new DateTime());
+    }
+    if ($api){
+        return $content;
+    }
+    return  drupal_json_output(array('success' => true, 'data'=> $output));
+}
+
+function most_viewed_get_view($display) {
+    $view = views_get_view('top_viewed_articles_videos', TRUE);
+    if($view){
+        $view->set_display($display);
+        $view->execute();
+    }
+    return $view;
+}
+
+
+function rp_google_analytics_most_viewed_opinions_render_item($node){
+  $output = '';
+  $link_to_node = drupal_get_path_alias('node/' . $node->nid);
+  $writer = taxonomy_term_load($node->field_writer[LANGUAGE_NONE][0]['tid']);
+  $writer_link = '/search?writer=' . $writer->tid;
+  $writer_image = $writer->field_opinion_drawing[LANGUAGE_NONE][0]['uri'];
+  $writer_image = theme('image_style', array('style_name'=> 'writer_250x250', 'path' => $writer_image));
+  $writer_name = $writer->name;
+  $output .= '<div class="opinion-wrapper">';
+  $output .= '<div class="opinion-right">';
+  $output .= '<div class="writer-img"><a href="' . $link_to_node . '">' . $writer_image . '</a></div>';
+  $output .= '</div>';
+  $output .= '<div class="opinion-left">';
+  $output .= '<div class="writer-name"><a href="' . $writer_link . '">' . $writer_name . '</a></div>';
+  $output .= '<div class="title"><a href="' . $link_to_node . '">' . $node->field_front_page_title[LANGUAGE_NONE][0]['value'] . '</a></div>';
+  $output .= '<div class="created"><a href="' . $link_to_node . '">' . date('d.m.y', $node->created) . '</a></div>';
+  $output .= '</div>';
+  $output .= '</div>';
+  return $output;
+}

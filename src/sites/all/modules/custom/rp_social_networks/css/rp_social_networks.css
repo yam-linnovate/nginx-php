@@ -1,0 +1,63 @@
+.pane-social-networks .social-networks{
+    display: flex;
+}
+.pane-social-networks .social-networks div{
+    background: #333e4e;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    display: flex;
+    margin: 0 3px;
+}
+.pane-social-networks .social-networks div a {
+    margin: 0 auto;
+    align-self: center;
+}
+.pane-social-networks .store-networks{
+    margin: 20px 0;
+}
+.pane-social-networks .store-networks .desc-to-download{
+    border-width: 1px;
+    border-color:  #2eacb4;
+    border-style: solid;
+    background-color:  #222831;
+    text-align: center;
+    padding: 10px;
+}
+.pane-social-networks .store-networks .desc-to-download p{
+    color: white;
+    font-family: almoni-neue-aaa-700;
+    font-size: 24px;
+    margin: 0;
+}
+.pane-social-networks .store-networks .wrap-btn-store{
+    background: #2eacb4;
+    border: 1px #2eacb4 solid;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+}
+@media (min-width: 769px) {
+    /* .share-wrapper.sticky {
+        position: fixed;
+        right: 2%;
+        border: 1px solid #2eacb4;
+        border-radius: 5px;
+        background: white;
+        top: 30%;
+        z-index: 1000;
+    } */
+    .share-wrapper.sticky .social-wrapper {
+        display: flex;
+        /* flex-direction: column; */
+    }
+    .bottom-social .share-wrapper.sticky .social-wrapper.sticky .link,
+    .content .sub-header-area .bottom-social .share-wrapper.sticky .social-wrapper .link {
+        margin: 5px;
+    }
+    .bottom-social .share-wrapper.sticky .social-wrapper .link img {
+        height: auto;
+        max-width: 100%;
+    }
+}
+

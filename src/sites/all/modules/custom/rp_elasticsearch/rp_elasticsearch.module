@@ -1,0 +1,201 @@
+<?php
+
+function rp_elasticsearch_admin() {
+    $form = array();
+
+    $form['rp_elasticsearch_server'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Elasticsearch Client id'),
+        '#default_value' => variable_get('rp_elasticsearch_server', 'elasticsearch_server'),
+        '#required' => TRUE,
+    );
+    $form['rp_elasticsearch_exclude_words'] = array(
+        '#type' => 'textfield',
+        '#size' => '255',
+        '#title' => t('Elasticsearch Exclude Words From Search Results'),
+        '#description' => t('Insert comma seperator single words (not phrases) to exclude, for expamle: hellow,world'),
+        '#default_value' => variable_get('rp_elasticsearch_exclude_words', ''),
+    );
+    $form['rp_elasticsearch_exclude_categories'] = array(
+        '#type' => 'select',
+        '#multiple' => TRUE,
+        '#options' => taxonomy_allowed_values(field_info_field('field_section')),
+        '#title' => t('Elasticsearch Exclude Categories From Search Results'),
+        '#default_value' => variable_get('rp_elasticsearch_exclude_categories',  0),
+    );
+    return system_settings_form($form);
+}
+
+function rp_elasticsearch_menu() {
+    $items['rp_elasticsearch/json'] = array(
+        'access callback'   => true,
+        'page callback'     => 'rp_elasticsearch_do_search_json',
+    );
+    $items['admin/config/rp_elasticsearch'] = array(
+    'title' => 'Republish Elasticsearch Configuration',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('rp_elasticsearch_admin'),
+    'access arguments' => array('administer rp_elasticsearch settings'),
+    'type' => MENU_NORMAL_ITEM,
+   );
+    return $items;
+}
+
+function rp_elasticsearch_do_search_json() {
+   	$data = array();	
+	$params = drupal_get_query_parameters();
+	$key = isset($params['key']) && $params['key']? $params['key'] : '';
+    $tag = isset($params['tag']) && $params['tag']? $params['tag'] : '';
+    $cassification = isset($params['cassification']) && $params['cassification']? $params['cassification'] : '';
+    $unit = isset($params['unit']) && $params['unit']? $params['unit'] : '';
+	$start = isset($params['start']) && $params['start'] ? strtotime($params['start']) : '';
+    $end = isset($params['end']) && $params['end'] ? strtotime($params['end'] . '23:59:59') : '';
+    $article_type = isset($params['article_type']) && $params['article_type']? $params['article_type'] : '';
+    $attached_files = isset($params['attached_files']) && $params['attached_files']? $params['attached_files'] : '';
+    $offset =  isset($params['offset']) && $params['offset']? $params['offset'] : '';
+
+    $words_to_exclude = variable_get('rp_elasticsearch_exclude_words', '');
+    $words_to_exclude = explode(',', $words_to_exclude);
+    $words_to_exclude = implode(' ', $words_to_exclude);
+    $category_to_exclude = variable_get('rp_elasticsearch_exclude_categories', array());
+    $category_to_exclude = array_values($category_to_exclude);
+	$searchParams = array(
+        'index' => 'republish',
+        'body'  => array(
+        	'size' => $offset * 10,
+        	'query' => array(),
+	    	'sort' => array(
+	    		array("_score" => 'desc'),
+	    		array("created" => array('order'=>'desc')),
+	    		array("title.keyword" => array('order'=>'asc'))
+    		)	    		
+    	)
+   	);
+    $exclude_query = array(
+        array('terms' => array('field_section:tid' => $category_to_exclude)),
+        array('multi_match' => array(
+                'query' => $words_to_exclude, 
+                'fields' => array(
+                    'title',
+                    'body:value',
+                    'field_tags:name',
+                    'field_cassification:name',
+                    'field_unit:name',
+                    'field_article_type',
+                    'field_attached_files:field_file_type',
+                    'field_front_page_intro',
+                    'field_front_page_title',
+                    'field_main_intro',
+                    'field_opinion_intro',
+                    'field_pre_title',
+                )
+            )
+        )
+    );
+    $searchParams['body']['query']['bool']['must_not'] = $exclude_query;
+    if($key)
+		$keyQuery =  array(    		
+        	array('match_phrase' => array('title' => $key)),
+        	array('match_phrase' => array('body:value' => $key)),
+        	array('match_phrase' => array('field_intro' => $key)),
+            array('match_phrase' => array('field_tags:name' => $key)),
+            array('match_phrase' => array('field_cassification:name' => $key)), 
+            array('match_phrase' => array('field_unit:name' => $key)), 
+            array('match_phrase' => array('field_article_type' => $key)), 
+            array('match_phrase' => array('field_attached_files:field_file_type' => $key)),
+        	array('match_phrase' => array('field_front_page_intro' => $key)),
+        	array('match_phrase' => array('field_front_page_title' => $key)),
+        	array('match_phrase' => array('field_main_intro' => $key)),
+        	array('match_phrase' => array('field_opinion_intro' => $key)),
+        	array('match_phrase' => array('field_pre_title' => $key)),                 
+    	);
+
+    if($tag)
+        $tagQuery = array('term' => array('field_tags:tid' => $tag));
+
+    if($cassification)
+        $cassificationQuery = array('term' => array('field_cassification:tid' => $cassification)); 
+        
+    if($unit)
+        $unitQuery = array('term' => array('field_unit:tid' => $unit));       
+
+    if($article_type)
+         $article_typeQuery = array('term' => array('field_article_type' => $article_type));
+         
+    if($attached_files)
+         $attached_filesQuery = array('term' => array('field_attached_files:field_file_type' => $attached_files));
+    
+    if($tag || $attached_files || $article_type || $cassification || $unit){ // if params other than "key" 
+		$searchParams['body']['query']['bool']['must'] = array();
+
+		if($tag)
+            $searchParams['body']['query']['bool']['must'][] = $tagQuery;
+        if($cassification) 
+            $searchParams['body']['query']['bool']['must'][] = $cassificationQuery;      
+        if($unit) 
+            $searchParams['body']['query']['bool']['must'][] = $unitQuery;       
+        if($article_type)
+            $searchParams['body']['query']['bool']['must'][] = $article_typeQuery;  
+        if($attached_files)
+            $searchParams['body']['query']['bool']['must'][] = $attached_filesQuery;  
+		if($start)
+			$searchParams['body']['query']['bool']['must'][]['range'] = array('created'=>array('gte'=>$start));
+		if($end)
+            $searchParams['body']['query']['bool']['must'][]['range'] = array('created'=>array('lte'=>$end));   
+		if($key) // if "key" param
+			$searchParams['body']['query']['bool']['must'][] = array('bool'=>array('should'=> $keyQuery));
+	}
+	else {
+		$searchParams['body']['query']['bool']['should'] = $keyQuery; // only "key" param
+		if($start)
+			$searchParams['body']['query']['bool']['should'][]['range'] = array('created'=>array('gte'=>$start));
+		if($end)
+			$searchParams['body']['query']['bool']['should'][]['range'] = array('created'=>array('lte'=>$end));
+    } 
+
+    $client_id = variable_get('rp_elasticsearch_server', 'elasticsearch_server');
+    $client = elasticsearch_connector_get_client_by_id($client_id);
+    try {
+      $response = $client->search($searchParams)->getRawResponse();
+      foreach ($response['hits']['hits'] as $value) {
+        $data[] = _rp_elasticsearch_prepare_node_to_view($value['_source']);
+      }
+      return drupal_json_output(array('success' => true, 'data'=> $data, 'total'=> $response['hits']['total']));
+    } catch(Exception $e) {
+      echo 'Message: ' .$e->getMessage();
+    }
+
+}
+
+function rp_elasticsearch_theme($existing, $type, $theme, $path) {
+  $themes = array ();
+
+  $themes['rp_elasticsearch'] = array(
+    'template' => 'rp_elasticsearch',
+    'variables' => array(
+      'img_prefix' => NULL,
+    ),
+
+  );
+  return $themes;
+}
+
+function rp_elasticsearch_ctools_plugin_directory($module, $plugin) {
+   if ($module == 'page_manager' || $module == 'panels' || $module == 'ctools') {
+    return 'plugins/' . $plugin;
+  }
+}
+
+function _rp_elasticsearch_prepare_node_to_view($node){
+	if($image = $node['field_images:field_image:file:fid']){
+		$image =  file_load($image);
+		$image = image_style_url('345x195',  $image->uri);
+		$node['image'] = $image;
+	}
+	
+	
+	$node['created'] = date("d.m.y", $node['created']);
+	
+	return $node;
+
+}

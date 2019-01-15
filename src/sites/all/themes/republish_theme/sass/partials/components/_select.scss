@@ -1,0 +1,117 @@
+@include large() {
+  .page-contact-us,
+  .page-jobs {
+    .form-select {
+      display: none;
+    }
+    label {
+      display: none;
+    }
+  }
+  .scrollableList {
+    box-sizing: border-box;
+    margin: 0;
+    position: relative;
+    &:before {
+      content: '\e800';
+      font-family: "fontello";
+      position: absolute;
+    }
+  }
+  .scrollableList ul {
+    border: 1px solid #DEDEDE;
+    box-sizing: border-box;
+    margin: 5px 0 0 -5px;
+    position: absolute;
+    padding: 3px 17px 3px 0px;
+    right: 0;
+    width: 100%;
+  }
+  .scrollableList ul li {
+    list-style:none;
+    cursor:pointer;
+    font-family: 'Open Sans Hebrew Regular';
+  }
+  .selectedOption {
+    font-family: 'Open Sans Hebrew Regular';
+    cursor:pointer;
+  }
+
+  .page-contact-us {
+    .scrollableList {
+      background-color: #f0f3f3;
+      border: 1px solid $light-green;
+      border-radius: 5px;
+      heigth: 46px;
+      padding: 0 17px;
+      width: 50%;
+      &:before {
+        color: #555f6e;
+        left: 10px;
+        top: 15px;
+      }
+    }
+    .scrollableList ul {
+      background-color: #f0f3f3;
+    }
+    .scrollableList ul li {
+      color: #555f6e;
+      font-size: 16px;
+      margin-left: 14px;
+      line-height: 25px;
+    }
+    .selectedOption {
+      color: #555f6e;
+      font-size: 16px;
+      height: 46px;
+      line-height: 46px;
+      margin-left: 10px;
+      margin-top: 2px;
+    }
+    .scrollableList ul li:hover {
+      color:#c33;
+    }
+    .selectedOption:hover {
+      color:#333;
+    }
+  }
+
+  .page-jobs {
+    .unit.header {
+      position: relative;
+    }
+    .filtering-section {
+      bottom: 10px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      margin: auto;
+      z-index: 1;
+    }
+    .views-exposed-form {
+      .views-exposed-widget {
+        margin-left: 33px;
+        padding: 0;
+      }
+    }
+    .scrollableList {
+      background-color: white;
+      color: #000;
+      height: 41px;
+      font-family: Heebo-Light;
+      line-height: 41px;
+      max-height: 41px;
+      padding: 0 9px;
+      width: 229px;
+      &:before {
+        color: black;
+        left: 10px;
+        top: 0;
+      }
+    }
+    .scrollableList ul {
+      background-color: white;
+      z-index: 1;
+    }
+  }
+}

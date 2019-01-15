@@ -1,0 +1,117 @@
+@include large() {
+  .pane-jobs-article {
+    margin-bottom: 87px;
+    & * {
+      box-sizing: border-box;
+      color: #1a1a1a;
+    }
+    .view-all-container {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .view-all-articles-button {
+      background-color: $green;
+      border-radius: 4px;
+      color: white;
+      display: inline-block;
+      font-family: Heebo-Medium;
+      font-size: 14px;
+      line-height: 30px;
+      margin-bottom: 18px;
+      padding: 0 12px;
+    }
+    .img-background {
+      background-repeat: no-repeat;
+      height: 230px;
+    }
+    .content-bottom {
+      background-color: white;
+      overflow: auto;
+      padding: 24px 27px 24px 24px;
+      position: relative;
+    }
+    .description {
+      font-family: Heebo-Light;
+      font-size: 16px;
+      padding-right: 5px;
+      p {
+        margin: 0;
+      }
+    }
+    .pane-title {
+      font-family: Heebo-ExtraBold;
+      font-weight: normal;
+      margin: 0 0 54px 0;
+    }
+    .article-link {
+      color: $green;
+      font-family: Heebo-Light;
+      font-size: 16px;
+      position: absolute;
+      bottom: 27px;
+      left: 24px;
+    }
+  }
+}
+
+@include small() {
+  .pane-jobs-article {
+    margin-bottom: 30px;
+    box-shadow: #dedede 0px 3px 3px;
+    background-color: white;
+    & * {
+      box-sizing: border-box;
+      color: #1a1a1a;
+    }
+    .view-all-container {
+      display: flex;
+      justify-content: flex-start;
+    }
+    .view-all-articles-button {
+      color: #1a1a1a;
+      display: inline-block;
+      font-family: Heebo-Black;
+      font-size: 18px;
+      line-height: 32px;
+      margin-bottom: 16px;
+      padding-right: 10px;
+      width: 100%;
+      box-shadow: #dedede 0px 3px 3px;
+      background-color: #f2f3f4;
+    }
+    .img-background {
+      background-repeat: no-repeat;
+      height: 96px;
+      background-size: cover;
+    }
+    .content-bottom {
+      background-color: white;
+      overflow: auto;
+      padding: 4px 8px 20px 24px;
+      position: relative;
+    }
+    .description {
+      font-family: Heebo-Light;
+      font-size: 16px;
+      padding-right: 5px;
+      p {
+        margin: 0;
+      }
+    }
+    .pane-title {
+      font-family: Heebo-Black;
+      font-weight: normal;
+      margin: 0;
+      font-size: 20px;
+      color: #2eacb4;
+    }
+    .article-link {
+      color: #1a1a1a;
+      font-family: Heebo-Bold;
+      font-size: 18px;
+      position: absolute;
+      top: 26px;
+      right: 11px;
+    }
+  }
+}

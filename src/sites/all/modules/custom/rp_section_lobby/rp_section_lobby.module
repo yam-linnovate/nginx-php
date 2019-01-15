@@ -1,0 +1,160 @@
+<?php
+
+function rp_section_lobby_init() {
+  drupal_add_js(drupal_get_path('module', 'rp_section_lobby') . '/js/rp_section_lobby.js');
+}
+
+function rp_section_lobby_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'page_manager' || $module == 'panels' || $module == 'ctools') {
+	return 'plugins/' . $plugin;
+  }
+}
+
+function rp_section_lobby_menu(){
+	$items['admin/create-lobby-section'] = array(
+	    'title' => t('Match section to Lobby page'),
+	    'page callback' => 'drupal_get_form',
+	    'page arguments' => array('rp_section_lobby_form'),
+	    'access arguments' => array('administer site configuration'),
+	);
+	return $items;
+}
+
+function rp_section_lobby_get_lobby_path($tid) {
+	$list = variable_get('lobby_section_list', array());
+	foreach ($list as $key => $value) {
+		if($value['section'] == $tid){
+			return array('path' => $value['url']);
+		}
+	}
+	return array('path' => 'search', 'options'=>array('query'=> array('section'=> $tid)));
+}
+
+function rp_section_lobby_form($form, &$form_state) {
+  $options = array();
+  $options[0] = t('Choose Section'); 
+  $section = taxonomy_vocabulary_machine_name_load('section');
+  if ($terms = taxonomy_get_tree($section->vid)) {
+    foreach ($terms as $term) {
+      $depth = '';
+      if($term->depth > 0)
+       $depth = ' > ';
+      $options[$term->tid] = $depth.$term->name;
+    }
+  }
+  // Because we have many fields with the same values, we have to set
+  // #tree to be able to access them.
+  $form['#tree'] = TRUE;
+  $form['lobby_list'] = array(
+    '#type' => 'fieldset',
+    '#prefix' => '<div id="names-fieldset-wrapper">',
+    '#suffix' => '</div>',
+  );
+  $index = variable_get('lobby_section_num_index');
+  if (!isset($index) || empty($index)) {
+    $form_state['num_names'] = 1;
+  }
+  else
+    $form_state['num_names'] = $index; 
+  $list = variable_get('lobby_section_list');
+  for ($i = 0; $i < $form_state['num_names']; $i++) {
+    //Parent container
+    $form['lobby_list'][$i] = array(
+    '#prefix' => '<div class="two-col">',
+    '#suffix' => '</div>'
+    );
+    
+    //other form elements 
+    $form['lobby_list'][$i]['url'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Lobby URL'),
+      '#prefix' => '<div class="col2">',
+      '#suffix' => '</div>',
+      '#default_value' => (isset($list[$i]['url']) && !empty($list[$i]['url'])) ? $list[$i]['url']  : '',
+    );
+    $form['lobby_list'][$i]['section'] = array(
+      '#type' => 'select',
+      '#title' => t('Section'),
+      '#prefix' => '<div class="col2">',
+      '#suffix' => '</div>',
+      '#default_value' => isset($list[$i]['section']) ? $list[$i]['section'] : 0,
+      '#options' => $options,
+    );
+    $form['lobby_list'][$i]['choose'] = array(
+        '#prefix' => '<div class="form-item-choose" style="display:none;">',
+         '#suffix' => '</div>',
+        '#type' => 'textfield',  
+        '#maxlength' => 1,
+        '#default_value' =>  (isset($list[$i]['choose'])) ? $list[$i]['choose']  : 1,
+    );  
+    $form['lobby_list'][$i]['remove'] = array(
+       '#markup' => t('Remove Button'),
+       '#prefix' => '<div class="remove-item">',
+       '#suffix' => '</div>',
+    );  
+  }
+  $form['lobby_list']['add_name'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add one more'),
+    '#submit' => array('rp_section_lobby_form_add_one'),
+    '#ajax' => array(
+      'callback' => 'rp_section_lobby_form_callback',
+      'wrapper' => 'names-fieldset-wrapper',
+    ),
+  );
+  $form['#submit'][] = 'rp_section_lobby_admin_settings_submit';
+  return system_settings_form($form);
+}
+
+/**
+ * Callback for both ajax-enabled buttons.
+ *
+ * Selects and returns the fieldset with the names in it.
+ */
+function rp_section_lobby_form_callback($form, $form_state) {
+  return $form['lobby_list'];
+}
+
+/**
+ * Submit handler for the "add-one-more" button.
+ *
+ * Increments the max counter and causes a rebuild.
+ */
+function rp_section_lobby_form_add_one($form, &$form_state) {
+  $form_state['num_names']++;
+  variable_set('lobby_section_num_index', $form_state['num_names']);
+  $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * Submit handler for the "remove one" button.
+ *
+ * Decrements the max counter and causes a form rebuild.
+ */
+function rp_section_lobby_form_remove_one($form, &$form_state) {
+  if ($form_state['num_names'] > 1) {
+    $form_state['num_names']--;
+  }
+  variable_set('lobby_section_num_index', $form_state['num_names']);
+  $form_state['rebuild'] = TRUE;
+}
+
+function rp_section_lobby_admin_settings_submit($form, &$form_state) {
+  $list = $form_state['values']['lobby_list'];
+  $checked = array();
+  $newlist = array();
+  for ($i = 0; $i < count($list); $i++) {
+    if($list[$i]['choose'] == 1)
+      $newlist[] = $list[$i];
+  }
+  variable_set('lobby_section_list', $newlist);
+  variable_set('lobby_section_num_index', count($newlist));
+}
+
+function section_store_pane_content($pane, $content, $pid = 0){
+  $page = page_manager_get_current_page();
+  $page_name = $page['name'];
+  $page_name = str_replace('-', '_', $page_name);
+  $variable_name = $pid ? $page_name . '_' . $pane . '_' . $pid : $page_name . '_' . $pane;
+  variable_set($variable_name, $content);
+}

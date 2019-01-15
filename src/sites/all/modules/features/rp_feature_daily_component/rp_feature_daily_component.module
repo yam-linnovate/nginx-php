@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Rp - Feature Daily Component feature.
+ */
+
+include_once 'rp_feature_daily_component.features.inc';

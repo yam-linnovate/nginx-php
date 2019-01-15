@@ -1,0 +1,147 @@
+<?php
+
+function republish_init() {
+  drupal_add_css(drupal_get_path('theme', 'republish_theme') . '/stylesheets/admin-panels.css');
+}
+function republish_form_alter(&$form, $form_state, $form_id) {
+  if($form_id == 'user_register_form' && !path_is_admin(current_path())) {
+    drupal_set_message('Not supported Register in this site');
+    $form['#access'] = false;
+  }
+}
+function republish_entity_info_alter(&$entity_info) {
+  module_load_include('inc', 'republish', 'entity_alter/republish.entity_info_alter');
+  $entity_info['taxonomy_term']['uri callback'] = '_republish_taxonomy_term_uri';
+  /**
+   * Field collections.
+   */
+  $entity_info['field_collection_item']['view modes']['hp_large_image'] = array(
+    'label' => t('Home page Large Article'),
+    'custom settings' => TRUE,
+  );
+  $entity_info['field_collection_item']['view modes']['hp_medium_image'] = array(
+    'label' => t('Home page Medium Article'),
+    'custom settings' => TRUE,
+  );
+  $entity_info['field_collection_item']['view modes']['hp_small_image'] = array(
+    'label' => t('Home page Small Article'),
+    'custom settings' => TRUE,
+  );
+  $entity_info['field_collection_item']['view modes']['article_by_cat'] = array(
+    'label' => t('Article by Catrgory'),
+    'custom settings' => TRUE,
+  );
+  $entity_info['field_collection_item']['view modes']['last_articles'] = array(
+    'label' => t('Last 5 Articles'),
+    'custom settings' => TRUE,
+  );
+  $entity_info['field_collection_item']['view modes']['hp_large_video'] = array(
+    'label' => t('Home page Large Video'),
+    'custom settings' => TRUE,
+  );
+  /**
+   * END Field collections.
+   */
+  
+  /**
+   * Display field of node.
+   */
+
+  $entity_info['node']['view modes']['hp_large_article'] = array(
+    'label' => t('Home page Large Article'),
+    'custom settings' => TRUE,
+  ); 
+  $entity_info['node']['view modes']['hp_midi_article'] = array(
+    'label' => t('Home page Medium Article'),
+    'custom settings' => TRUE,
+  );
+  $entity_info['node']['view modes']['hp_small_article'] = array(
+    'label' => t('Home page Small Article'),
+    'custom settings' => TRUE,
+  );
+  $entity_info['node']['view modes']['hp_video_large'] = array(
+    'label' => t('Home page Large Video'),
+    'custom settings' => TRUE,
+  );
+  $entity_info['node']['view modes']['head_to_head'] = array(
+   'label' => t('Head to Head'),
+   'custom settings' => TRUE,
+  );
+  /**
+   * END Display field of node.
+   */
+}
+
+/*function republish_node_access($node, $op, $account){
+	if(user_is_anonymous() && isset($node->type) && in_array($node->type, array('hp_image', 'newsflash', 'event')))
+		return NODE_ACCESS_DENY;
+	return NODE_ACCESS_IGNORE;
+}*/
+
+function _republish_taxonomy_term_uri($term) {
+  switch($term->vocabulary_machine_name){
+    case 'writer': 
+      return array('path' => 'search', 'options'=>array('query'=> array('writer'=> $term->tid)));
+    case 'tags': 
+      return array('path' => 'search', 'options'=>array('query'=> array('tag'=> $term->tid)));
+    case 'section':
+      if(module_exists('rp_section_lobby')){
+        return rp_section_lobby_get_lobby_path($term->tid);
+      }
+      return array('path' => 'search', 'options'=>array('query'=> array('section'=> $term->tid)));
+  }
+  return array('path' => 'taxonomy/term/' . $term->tid);
+}
+
+function republish_views_query_alter(&$view, &$query) {
+  if ($view->name == 'video' && $view->current_display == 'block') {
+    if(is_numeric(arg(1)))
+    $query->where[1]['conditions'][2]['value'] = arg(1);
+  }
+}
+
+/*
+ * Implements hook_field_widget_form_alter().
+ */
+function republish_field_widget_form_alter(&$element, &$form_state, $context) {
+  if ($context['field']['type'] == 'image' && !empty($context['instance']['settings']['alt_field'])) {
+    foreach (element_children($element) as $delta) {
+      $element[$delta]['#process'][] = 'republish_image_field_widget_process';
+    }   
+  }
+}
+
+/*
+ * Function to help with processing each image field.
+ */
+
+function republish_image_field_widget_process($element, &$form_state, $form) {
+  if ($element['alt']['#access']) {
+    $element['alt']['#attributes'] = array('class' => array('form-text','alt-required'));
+    $element['alt']['#element_validate'] = array('_image_field_validate_alt_text');
+  }
+  return $element;
+}
+
+/*
+ * Helper function to validate that alt text is provided for all image fields.
+ */
+
+function _image_field_validate_alt_text($element, &$form_state) {
+  if (!in_array('file_managed_file_submit', $form_state['triggering_element']['#submit'])) {
+    // If the image is not there, we do not check for empty values.
+    $parents = $element['#parents'];
+    $field = array_pop($parents);
+    $image_field = drupal_array_get_nested_value($form_state['input'], $parents);
+    // We check for the array key, so that it can be NULL (like if the user
+    // submits the form without using the "upload" button).
+    if (!array_key_exists($field, $image_field)) {
+      return;
+    }   
+    // Check if field is left emtpy.
+    elseif (empty($image_field[$field])) {
+      form_error($element, t('The field !title is required', array('!title' => $element['#title'])));
+      return;
+    }   
+  }
+}

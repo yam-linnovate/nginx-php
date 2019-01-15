@@ -1,0 +1,84 @@
+<?php
+
+ /**
+  * Implements hook_menu().
+  **/
+ function pdf_convertor_menu() {
+   $items = array();
+   $items['node/%/pdf'] = array(
+     'page callback' => 'pdf_convertor_node',
+     'page arguments' => array(1,'pdf'),
+     'access callback' => TRUE,
+   );
+   return $items;
+ }
+ 
+ function pdf_convertor_node($nid,$format) {
+   $node = node_load($nid);
+   $options = array(
+     'name' => $nid,
+     'download' => TRUE,
+   );
+   $html = preg_replace('/pdf$/', '', $_SERVER['HTTP_HOST'] . request_uri());
+  //  $html = preg_replace('/republish/', 'http://localhost', $html);
+   $html = str_replace($_SERVER['HTTP_HOST'], 'http://localhost', $html);
+   pdf_convertor_html($html, $format, $options);
+ }
+ 
+ function pdf_convertor_html($html, $format, $options = array()) {  
+   /* file name */
+   $name = $options['name'];
+   $file_name = !empty($name) ? $name : md5(time());
+   $options['name'] = $file_name;
+   $file_name = "$file_name.". $format;
+   $dir = isset($options['dir']) ? $options['dir'] :  file_stream_wrapper_get_instance_by_uri('public://')->getDirectoryPath();
+   $file_name = $dir . "/$file_name";
+   
+   /* phantomjs */
+   return pdf_convertor_html_phantomjs($html, $file_name, $options);
+ }
+ 
+ /**
+  * Creates pdf with phantomjs
+  * @param $html
+  * @param $file_name
+  * @param $options
+  */
+ function pdf_convertor_html_phantomjs($html, $destination, $options) {
+   $convertJs = __DIR__ .'/js/phantomConvertor.js';
+   $bin = variable_get('phantom_bin', '/usr/local/bin/phantomjs');
+   $cmd = array($bin, $convertJs);
+   if(is_array($html)) {
+      $html = implode(" ", $html);
+   }
+   $source = $html;
+   $cmd[] = " $source";
+   $cmd[] = " ". escapeshellcmd($destination);
+   $cmd  = implode(" ", $cmd);
+   $output = array();
+   exec($cmd, $output);
+   $success = file_exists($destination);
+   if($options['download']) {
+     if($success) {
+       //pdf_convertor_download_file($destination);
+       drupal_goto($destination);
+     }
+   }
+ }
+ 
+ function pdf_convertor_download_file($file) {
+   if (file_exists($file)) {
+     header('Content-Description: File Download');
+     header('Content-Type: application/octet-stream');
+     header('Content-Disposition: attachment; filename=' . basename($file));
+     header('Content-Transfer-Encoding: binary');
+     header('Expires: 0');
+     header('Cache-Control: must-revalidate');                                                                                                      
+     header('Pragma: public');
+     header('Content-Length: ' . filesize($file));
+     ob_clean();
+     flush();
+     readfile($file);
+     exit;
+   }
+ }

@@ -1,0 +1,56 @@
+<?php
+
+function rp_ckeditor_wysiwyg_plugin($editor, $version) {
+	switch ($editor) {
+	    case 'ckeditor':
+      		return array(
+	        	'quote_token' => array(
+		          	'path' =>  drupal_get_path('module', 'rp_ckeditor') . '/plugins/quote_token',
+		          	'filename' => 'plugin.js', 
+					'buttons' => array(
+			            'quote_token' => t('Quote Token'),
+		          	),
+	          	'load' => TRUE,
+	          	'internal' => FALSE,
+         		)
+     		);
+     		break;
+	}
+}
+
+function rp_ckeditor_field_attach_view_alter(&$output, $context) {
+	if ($context['entity_type'] == 'node') {
+		if (isset($output['body'])) {
+	      	$text = isset($output['body']['#items'][0]['safe_value']) ? $output['body']['#items'][0]['safe_value'] : null;
+	        if (isset($text)) {
+		        $value = _rp_ckeditor_parse_body_tokens($output, $text, $context['entity']);
+		        $output['body']['#items'][0]['safe_value'] = $value;
+		        $output['body'][0]['#markup'] = $value;
+	      	}
+	      	$text = isset($output['body']['#items'][0]['safe_value']) ? $output['body']['#items'][0]['safe_value'] : null;
+	      	if ($text) {
+	        	$output['body']['#items'][0]['safe_summary'] = _rp_ckeditor_parse_body_tokens($output, $text, $context['entity']);
+	      	}
+
+	    }
+	}
+}
+
+function _rp_ckeditor_parse_body_tokens(&$output, $text, $node){
+	if (isset($output['field_quote_body']) && !empty($text)) {
+		$token = '[quote]';
+		$pos = strpos($text, $token);
+		$quote = '<div class="quote-wrapper">';
+		$quote .= '<img src="/sites/all/themes/republish_theme/images/quate.png" width="54" height="59"/>';
+		$quote .= '<div class="border"></div>';
+		$quote .= '<div class="quote">';
+		$quote .= isset($output['field_quote_source']) ? render($output['field_quote_body']) . render($output['field_quote_source']) : render($output['field_quote_body']);
+		$quote .= '</div>';
+		$quote .= '</div>';
+		if ($pos !== false) {
+        	$text = substr_replace($text, $quote , $pos, strlen($token));
+  		}
+	}
+	return $text;
+
+}

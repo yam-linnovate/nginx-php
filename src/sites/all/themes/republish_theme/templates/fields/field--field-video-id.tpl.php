@@ -1,0 +1,1 @@
+<iframe src="//nadlan.bamboo-video.com/api/embed?id=<?php print ($items[0]['#markup']);?>&uiconf_id=11629215&type=entry&iid=5acb09316986fb539d5007a4" width="800" height="500" allowfullscreen webkitallowfullscreen frameborder="0"></iframe>

@@ -1,0 +1,71 @@
+<?php
+
+
+function rp_plugins_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'page_manager' || $module == 'panels' || $module == 'ctools') {
+	return 'plugins/' . $plugin;
+  }
+}
+
+function store_pane_content($pane, $content, $pid = 0){
+	$page = page_manager_get_current_page();
+	if ($page['subtask']){
+        $page_name = $page['subtask']['name'];
+        $variable_name = $pid ? $page_name . '_' . $pane . '_' . $pid : $page_name . '_' . $pane;
+        variable_set($variable_name, $content);
+    }
+}
+
+
+/**
+ * Implements hook_menu().
+ *
+ * Sets up calls to drupal_get_form() for all our example cases.
+ *
+ * @see menu_example.module
+ * @see menu_example_menu()
+ */
+function rp_plugins_menu() {
+  $items = array(
+  'rp_plugins_special_projects_ajax_path' => array(
+    'title' => 'Testing an CTools Form Ajax callback.',
+    'page callback' => 'rp_plugins_content_type_edit_form_ajax_callback',
+    // do I need to use the 'file' key below to include something?
+    // 'file' => drupal_get_path('module', 'MODULE_NAME'),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  ),
+  );
+
+
+  return $items;
+}
+
+function rp_plugins_theme() {
+    return array(
+        'contact_us_block' => array(
+            'render element' => 'data',
+            'template' => 'plugins/templates/contact-us'
+        ),
+        'map_block' => array(
+            'render element' => 'data',
+            'template' => 'plugins/templates/google-map'
+        ),
+        'jobs_category' => array(
+            'render element' => 'data',
+            'template' => 'plugins/templates/jobs-category'
+        ),
+        'jobs_company' => array(
+            'render element' => 'data',
+            'template' => 'plugins/templates/jobs-company'
+        ),
+        'pane_image' => array(
+            'render element' => 'data',
+            'template' => 'plugins/templates/pane-image'
+        ),
+        'jobs_block' => array(
+            'render element' => 'data',
+            'template' => 'plugins/templates/jobs-block-home'
+        ),
+    );
+}

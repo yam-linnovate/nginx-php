@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * @file
+ * Extends Service Links with Share Btn services.
+ *
+ * @author Aiaraldea
+ */
+
+/**
+ * Implements hook_service_links().
+ */
+
+function rp_btn_share_service_links() {
+  $links = array();
+
+  $links['facebook'] = array(
+    'name' => 'Facebook',
+    'description' => t('Share article on facebook'),
+    'link' => 'http://www.facebook.com/share.php?u=<encoded-url>&title=<encoded-title>',
+    'icon' => drupal_get_path('module', 'rp_btn_share') . '/images/facebook.png',
+    'javascript' => array(
+      drupal_get_path('module','rp_btn_share'). '/js/facebook_button.js',
+    ),
+  );
+  $links['twitter'] = array(
+    'name' => 'Twitter',
+    'description' => t('Share article on twitter'),
+    'link' => 'http://twitter.com/share?url=<raw-encoded-short-url>&text=<raw-encoded-title>',
+    'icon' => drupal_get_path('module', 'rp_btn_share') . '/images/twitter.png',
+  );
+  $links['whatsapp'] = array(
+    'name' => 'Whatsapp',
+    'description' => t('Share article on whatsapp'),
+    'link' => 'http://',
+    'icon' => drupal_get_path('module', 'rp_btn_share') . '/images/whatsapp.png',
+    'javascript' => array(
+      drupal_get_path('module','rp_btn_share'). '/js/whatsapp_button.js',
+
+    ),
+  );
+    $links['my_favorite'] = array(
+      'name' => t('Favorite'),
+      'description' => t('Add this page in your favorites'),
+      'link' => '<url>&favtitle=<raw-encoded-title>',
+      'attributes' => array('style' => 'display:none;'),
+      'icon' => drupal_get_path('module', 'rp_btn_share') . '/images/bookmark.png',
+      'javascript' => array(
+        drupal_get_path('module','rp_btn_share'). '/js/my_favorite_services.js',
+      ),
+    );
+
+
+    return $links;
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function rp_btn_share_preprocess_node(&$variables)
+{
+    if ($variables['title']){
+        drupal_add_js(array(
+            'rp_btn_share' => array(
+            'title' => $variables['title'],
+            'link' => $_GET['q'],
+        )
+        ), 'setting');
+    }
+}

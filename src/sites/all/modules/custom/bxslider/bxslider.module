@@ -1,0 +1,72 @@
+<?php
+
+require_once('bxslider.functions.php');
+
+// ------------------------------------- init ----------------------------------------------- //
+/**
+ * Implements hook_help().
+ */
+function bxslider_help($path, $arg) {
+  switch ($path) {
+ 	default:
+      $output="";
+      return $output;
+  }
+}
+
+/*
+ * Implements hook_views_api().
+ */
+function bxslider_views_api() {
+  return array(
+    'api' => 2.0,
+    'path' => drupal_get_path('module', 'bxslider') . '/view_format',
+  );
+}
+
+/**
+ *  Implements hook_init().
+ */
+function bxslider_init() {
+  //drupal_add_css(drupal_get_path('module', 'bxslider') . '/custom-jquery-bxslider-js/jquery.bxslider.css');
+  drupal_add_js(drupal_get_path('module', 'bxslider') . '/js/bxslider.js');
+  drupal_add_js(drupal_get_path('module', 'bxslider') . '/js/jquery.bpopup.min.js');
+  drupal_add_js(bxsliderAjaxReadJS(),'inline');
+  drupal_add_js(_bxslider_library_path());
+}
+
+// Implements hook_theme().
+
+function bxslider_theme() {
+
+  return array(
+    'bxslider_field_formatter' => array(
+      'variables' => array('items' => NULL,'settings' => NULL, 'field_id' => NULL),
+      'template' => 'field_formatter/bxslider_field_formatter',
+      'file' => 'field_formatter/bxslider_field_formatter.formatter.inc',
+    ),
+    'bxslider_view_field' => array(
+      'variables' => array('items' => NULL, 'popup' => NULL, 'settings' => NULL, 'field_id' => NULL),
+      'template' => 'view_field/bxslider_view_field',
+      'file' => 'view_field/bxslider_view_field.inc',
+    ),
+   /* 'bxslider_view_format' => array(
+      'variables' => array('items' => NULL, 'field_id' => NULL, 'settings' => NULL),
+      'template' => 'view_format/bxslider_view_format',
+      'file' => 'view_format/bxslider_view_format.views.inc',
+    ),*/
+  );
+}
+
+require_once('field_formatter/bxslider_field_formatter.formatter.inc');
+require_once('view_field/bxslider_view_field.inc');
+
+
+
+
+function bxsliderAjaxReadJS()  {
+       $path = drupal_get_path('module', 'bxslider');
+       $js = file_get_contents($path.'/js/reads_per_img.js', FILE_USE_INCLUDE_PATH);
+    return $js;
+
+}

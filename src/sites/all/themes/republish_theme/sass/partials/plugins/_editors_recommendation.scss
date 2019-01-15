@@ -1,0 +1,123 @@
+@include large() {
+  .pane-editors-recommendation {
+    .pane-content {
+      padding: 0 16px 0 11px;
+      .pane-title {
+        @include underlined_title();
+        margin-bottom: 5px;
+      }
+      .small-article {
+        border-bottom: 1px solid #d3e8ec;
+        margin: 0;
+        padding: 17px 0 16px 10px;
+        display: flex;
+        @include font_family_regular;
+        .small-article-right {
+          width: 45%;
+          order: 2;
+          .section {
+            margin-bottom: 2px;
+            ul {
+              padding: 0;
+              margin: 0;
+              li {
+                display: block;
+                font-family: Arial;
+                font-size: 12px;
+                a {
+                  color: $green;
+                  display: block;
+                  font-family: arial;
+                  line-height: 1;
+                }
+              }
+            }
+          }
+          .writer {
+            display: none;
+          }
+          .title {
+            color: #222;
+            font-family: ShualBold;
+            font-weight: 400;
+            font-size: 20px;
+            display: block;
+            line-height: 20px;
+            max-height: 57px;
+            overflow: hidden;
+          }
+          .created {
+            display: none;
+          }
+        }
+        .small-article-left {
+          width: 50%;
+          margin-left: 5%;
+        }
+        &:last-child {
+          border-bottom: none;
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+@include small() {
+  .pane-editors-recommendation {
+    margin-bottom: 15px;
+    .pane-content {
+      background-color: white;
+      padding: 0;
+      .pane-title {
+        @include underlined_title_mobile();
+        @include view_more_title_mobile();
+        border-top: 1px solid $light-green;
+      }
+      .small-article {
+        @include two_col_section(small-article-right, small-article-left);
+        .small-article-right {
+          display: flex;
+          flex-direction: column;
+          .title {
+            margin: 0 0 10px 0;
+            overflow: hidden;
+          }
+          .field-name-field-front-page-title {
+            color: #333e4e;
+            @include font_family_bold;
+            font-size: 19px;
+            line-height: 1.2;
+          }
+          .writer {
+            display: none;
+          }
+          .created {
+            display: none;
+          }
+          & > .section {
+            order: 2;
+          }
+          .section {
+            margin-bottom: 2px;
+            ul {
+              padding: 0;
+              margin: 0;
+              li {
+                display: block;
+                font-family: Arial;
+                font-size: 14px;
+                a {
+                  color: $green;
+                  display: block;
+                  font-family: arial;
+                  line-height: 1;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

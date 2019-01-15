@@ -1,0 +1,25 @@
+From 8255eee3462b8b5bb6ee7bfcaca5c8fd4d8cffdc Mon Sep 17 00:00:00 2001
+From: "DESKTOP-N1M3HCN\\Egrq" <artemartem123456123@gmail.com>
+Date: Fri, 19 Oct 2018 18:29:13 +0300
+Subject: [PATCH] facebook comments bug fix
+
+---
+ .../all/modules/contrib/facebook_comments/facebook_comments.module      | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/sites/all/modules/contrib/facebook_comments/facebook_comments.module b/src/sites/all/modules/contrib/facebook_comments/facebook_comments.module
+index 66132d7..7cead4c 100644
+--- a/src/sites/all/modules/contrib/facebook_comments/facebook_comments.module
++++ b/src/sites/all/modules/contrib/facebook_comments/facebook_comments.module
+@@ -108,7 +108,7 @@ function facebook_comments_block_save($delta = '', $edit = array()) {
+ function facebook_comments_block_view($delta = '') {
+   $block = array();
+   if ($delta == 'facebook-comments') {
+-    $width = variable_get('facebook_comments_block_width', 208);
++    $width = variable_get('facebook_comments_width', 208);
+     $fluid = variable_get('facebook_comments_block_width_fluid', 1);
+     $amount = variable_get('facebook_comments_block_amount', 5);
+     $block = array(
+-- 
+1.8.3.msysgit.0
+

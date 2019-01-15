@@ -1,0 +1,53 @@
+.node-type-daily-component {
+    .content_area {
+        padding: 10px;
+        border: solid 1px $gray;
+        .areas {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            flex-wrap: wrap;
+            background: #f1f1f1;
+            .area {
+                margin: 1px 0;
+                width: 33.1%;
+                position: relative;
+                cursor: pointer;
+                opacity: 0.5;
+                &.active-area {
+                    opacity: 1;
+                }
+                .area_name {
+                    width: 100%;
+                    position: absolute;
+                    z-index: 1;
+                    top: 37%;
+                    text-align: center;
+                    span { 
+                        padding: 7px;
+                        color: white;                
+                        border: solid 1px white;
+                        @include font_family_bold;
+                        font-size: 28px;
+                    }
+                }
+                
+            }
+        }
+        .description {
+            padding: 35px 5px;
+            .area_description {
+                    display: none;
+                }
+            .active_description {
+                display: block;
+                p {
+                    margin: 0;
+                }
+            }
+        }
+    }
+    .footer-content {
+        margin-top: 65px;
+    }
+}

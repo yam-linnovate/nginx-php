@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Rp - Feature Hp Image feature.
+ */
+
+include_once 'rp_feature_hp_image.features.inc';

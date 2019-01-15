@@ -1,0 +1,41 @@
+<?php
+
+/**
+ *  This is inspired by drupal_set_title().
+ *  Using this function we can put add_body_class('something') everywhere
+ *  and add classes to the <body> tag (one class for each call of this function).
+ */
+function add_body_class($body_class = NULL) {
+  static $stored_body_classes = array();
+  if (isset($body_class)) {
+    $stored_body_classes[] = $body_class;
+  }
+  return $stored_body_classes;
+}
+
+function remove_body_class($body_class = NULL) {
+  static $body_classes_for_removal = array();
+//  dpm($body_class);
+  if (isset($body_class)) {
+    $body_classes_for_removal[] = $body_class;
+  }
+  return $body_classes_for_removal;
+}
+
+
+/**
+ * Implementing hook_preprocess_html,
+ * in order to add and remove the body classes.
+ */
+function add_class_preprocess_html(&$vars) {
+  // add classes
+  $classes = add_body_class();
+  $vars['classes_array'] = array_merge($vars['classes_array'], $classes);
+  // remove classes
+  $classes_to_remove = remove_body_class();
+  foreach ($vars['classes_array'] as $key => $class) {
+    if (in_array($class, $classes_to_remove)) {
+      unset($vars['classes_array'][$key]);
+    }
+  }
+}

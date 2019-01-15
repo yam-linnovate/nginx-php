@@ -1,0 +1,5 @@
+core = "7.x"
+description = "Republish social networks pane plugins module."
+name = "Rp - social networks plugins"
+package = Republish
+core = 7.x

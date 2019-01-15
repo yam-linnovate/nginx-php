@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Rp - Feature Section Lobby feature.
+ */
+
+include_once 'rp_feature_section_lobby.features.inc';

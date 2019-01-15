@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * Implements hook_init().
+ */
+function webform_antispam_init() {
+
+  $path = drupal_get_path('module', 'webform_antispam');
+  drupal_add_js($path . '/script.js');
+}
+
+//form spam validate
+function webform_antispam_form_alter(&$form, &$form_state, $form_id) {
+  //dsm($form);
+  if (!empty($form['#node']->webform)) {
+    $form['#validate'][] = 'webform_antispam_spam_form_validate';
+  }
+}
+
+function webform_antispam_spam_form_validate($form, &$form_state) {
+  //dsm($form_state);
+  if (isset($form_state['values']['submitted']['cheker'])) {
+    if ($form_state['values']['submitted']['cheker'] != $form_state['values']['form_build_id'].'4z1') {
+      form_set_error('name', t('Your browser is not supported'));
+    } else {
+      $form_state['values']['submitted']['cheker'] = '';
+    }
+  }
+}
+?>

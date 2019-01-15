@@ -1,0 +1,248 @@
+
+// ----------------------------------------------
+//                   Layout
+// ----------------------------------------------
+
+.not-logged-in {
+  .messages {
+    display: none;
+  }
+  .messages.status {
+    display: block;
+  }
+}
+
+.fb_iframe_widget_fluid span, iframe.fb_ltr { width: 100% !important; }
+
+.pane-content {
+  h1 {
+    font-weight: normal;
+    margin: 0;
+  }
+  h2 {
+    font-weight: normal;
+    margin: 0;
+  }
+}
+
+@include large {
+  html {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  body #main-wrapper #main{
+    width: 1373px;
+  }
+  .content {
+    width: 100%;
+  }
+  img {
+    height: auto;
+    max-width: 100%;
+  }
+  body{
+    padding-top: 100px;
+    @include font_family_regular;
+    background-color: $light-gray;
+    #header{
+      position: fixed;
+      right: 0;
+      top: 0;
+      z-index: 999;
+    }
+    #main-wrapper{
+      min-height: 680px;
+      #main{
+        width: 1373px;
+        float: none;
+        margin: auto;
+        .breadcrumb {
+          font-size: 12px;
+          list-style: none;
+          margin: 0;
+          padding: 4px 0 0 0;
+          li {
+            display: inline-block;
+          }
+          span {
+            display: inline-block;
+          }
+        }
+        .panel-panel {
+          .panel-pane {
+            background-color: white;
+            border: 1px solid #d3e8ec;
+            margin-bottom: 30px;
+          }
+          &.footer .panel-pane:last-child{
+            margin-bottom: 0px;
+          }
+          .panel-separator {
+            padding-top: 0;
+          }
+        }
+      }
+    }
+    &.panel-layout-threecol-stacked #main-wrapper #main{
+      width: 100%;
+    }
+    &.panel-layout-header-main #main-wrapper #main {
+      width: 100%;
+    }
+    &.not-logged-in .messages.error{
+      display: none;
+    }
+    &.page-not-found #main-wrapper{
+      background-image: url('../images/404.jpg');
+      background-position: center center;
+    }
+    &.panel-layout-twocol-66-33 .content{
+
+    }
+  }
+  .front.panel-layout-front { 
+    #main-wrapper {
+      #main.content-indent {
+        width: 75%;
+        .hp-articles-top {
+          .large-article-top {
+            position: relative;
+            .video.icon {
+              background-image: url('../images/play.svg');
+              background-size: contain;
+              position: absolute;
+              width: 100px;
+              height: 100px;
+              left: 47%;
+              top: 45%;
+            }
+          }
+        }
+        .hp-articles-bottom {
+          .small-article-left {
+            position: relative;
+            .video.icon {
+              background-image: url('../images/play.svg');
+              background-size: contain;
+              position: absolute;
+              width: 27px;
+              height: 27px;
+              bottom: 9px;
+              right: 9px;
+            }
+          }
+        }
+        .details {
+          .created,
+          .delimiter,
+          .cassification,
+          .unit {
+            color: #8a8a8a;
+            font-size: 12px;
+            &>span {
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
+  }
+  body.panel-layout-threecol-stacked {
+    #main-wrapper {
+      #main.content-indent {
+        width: 75%;
+      }
+    }
+  }
+  .page-law-tax {
+    .panel-separator {
+      display: none;
+    }
+  }
+  .jobs-container {
+    margin: 0 auto;
+    width: 1000px;
+  }
+}
+
+@include medium() {
+  body{
+    #main-wrapper{
+      #main{
+        width: 100%;
+      }
+    }
+  }
+}
+
+@include small {
+  body {
+    box-sizing: border-box;
+    padding-top: 46px;
+    background-color: $light-gray;
+    * {
+      box-sizing: border-box;
+    }
+    #main-wrapper #main{
+      width: 100%;
+    }
+  }
+  .panel-pane.pane-section-lobby-header {
+    .pane-content {
+      .title {
+        color: $black;
+        @include font_family_bold;
+        font-size: 22px;
+        line-height: 1;
+        margin: 5px 15px 16px 0;
+        text-align: right;
+      }
+    }
+  }
+  .panel-front .content-indent {
+    width: 100% ;
+    min-width: 100%;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-areas: "news-flash" "main" "events" "tv" "recomnded" "opinions";
+  }
+  .panel-threecol-stacked .content-indent {
+    width: 100% ;
+    min-width: 100%;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-areas: "news-flash" "main" "events" "tv" "recomnded" "opinions";
+  }
+  .front{
+    .panel-panel.header{
+      grid-area: news-flash;
+    }
+    .panel-panel.top-first{
+      grid-area: recomnded;
+    }
+    .panel-panel.top-second{
+      grid-area: main;
+    }
+    .panel-panel.top-third{
+      display: none;
+    }
+    .panel-panel.top-right{
+      display: none;
+    }
+    .panel-panel.top-left{
+      display: none;
+    }
+    .panel-panel.middle{
+      grid-area: events ;
+    }
+    .panel-panel.middle-first{
+      grid-area: tv ;
+    }
+    .panel-panel.middle-second{
+      display: none;
+    }
+  }
+}
+.wrapper-content{
+  display: flex;
+}

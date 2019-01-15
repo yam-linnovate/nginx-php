@@ -1,0 +1,5 @@
+core = "7.x"
+description = "Republish section lobby."
+name = "Rp - section lobby"
+package = Republish
+core = 7.x

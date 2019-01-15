@@ -1,0 +1,13 @@
+name = Rp - Feature most viewed contnet
+core = 7.x
+package = Features
+dependencies[] = ctools
+dependencies[] = google_analytics_reports
+dependencies[] = google_analytics_reports_api
+dependencies[] = googleanalytics
+dependencies[] = rp_google_analytics
+dependencies[] = views
+dependencies[] = webform
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:2
+features[views_view][] = top_viewed_articles_videos

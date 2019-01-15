@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * 
+ */
+function rp_newsflash_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'page_manager' || $module == 'panels' || $module == 'ctools') {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function rp_newsflash_menu() {
+    $items['newsflash_html'] = array(
+        'title' => 'Newsflash',
+        'page callback' => 'rp_newsflash_build_html',
+        'access arguments' => array('access content'),
+        'file' => 'rp_newsflash.inc',
+        'file path' => drupal_get_path('module', 'rp_newsflash') . '/router/pages',
+    );
+    $items['newsflash_html_sticly'] = array(
+        'title' => 'Newsflash',
+        'page callback' => 'rp_newsflash_build_html',
+        'access arguments' => array('access content'),
+        'file' => 'rp_newsflash.inc',
+        'file path' => drupal_get_path('module', 'rp_newsflash') . '/router/pages',
+    );
+    return $items;
+}
+
+function rp_newsflash_init() {
+    drupal_add_js(drupal_get_path('module', 'rp_newsflash') . '/js/rp_newsflash.js');
+}

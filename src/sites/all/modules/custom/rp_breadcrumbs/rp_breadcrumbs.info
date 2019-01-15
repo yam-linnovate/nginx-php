@@ -1,0 +1,7 @@
+core = "7.x"
+description = "Republish breadcrumbs markup."
+name = "Republish breadcrumbs"
+package = Republish
+core = 7.x
+
+stylesheets[all][] = css/styles.css

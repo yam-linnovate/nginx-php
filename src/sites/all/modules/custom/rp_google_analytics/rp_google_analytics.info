@@ -1,0 +1,5 @@
+core = "7.x"
+description = "Republish Most viewed content by google analytics."
+name = "Rp - Google analytics"
+package = Republish
+core = 7.x

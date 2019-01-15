@@ -1,0 +1,5 @@
+core = "7.x"
+description = "Republish Ckeditor tokens."
+name = "Rp - Ckeditor tokens"
+package = Republish
+core = 7.x

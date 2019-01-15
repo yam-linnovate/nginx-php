@@ -1,0 +1,11 @@
+.panel-four-col-25{
+  width: 100%;
+  display: inline-block;
+  clear: both;
+}
+.panel-four-col-25 .panel-panel{
+  width: 24%;
+  margin: 0.5%;
+  float: right;
+}
+

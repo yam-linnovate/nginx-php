@@ -1,0 +1,51 @@
+/* line 1, ../sass/api_web.scss */
+.quote-wrapper {
+  direction: rtl;
+  width: 90%;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-family: Arial;
+}
+/* line 11, ../sass/api_web.scss */
+.quote-wrapper img {
+  width: 30px !important;
+  height: auto;
+  display: block;
+  margin-left: -10px;
+  margin-right: -10px;
+  padding-bottom: 20px;
+}
+/* line 19, ../sass/api_web.scss */
+.quote-wrapper .border {
+  width: 20px;
+  height: calc(100% + 15px);
+  position: absolute;
+  border: 1px solid #d3e8ec;
+  right: 11%;
+  border-left: none;
+  top: -15px;
+}
+/* line 28, ../sass/api_web.scss */
+.quote-wrapper .quote {
+  width: 100%;
+  margin-right: 20%;
+}
+/* line 31, ../sass/api_web.scss */
+.quote-wrapper .quote .field-name-field-quote-body {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 19.2px;
+  font-family: Arial;
+}
+/* line 37, ../sass/api_web.scss */
+.quote-wrapper .quote .field-name-field-quote-source {
+  font-size: 18px;
+  line-height: 36px;
+  text-align: left;
+}
+
+/*# sourceMappingURL=api_web.css.map */

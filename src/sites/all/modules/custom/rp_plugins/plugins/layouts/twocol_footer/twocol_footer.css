@@ -1,0 +1,33 @@
+.unit {
+	float: none;
+	width: 100%;
+}
+#edit-buttons {
+	float: left;
+	margin-top: 50px;
+	width: 100%;
+}
+
+@media(max-width: 1400px) and (min-width: 769px) {
+	.not-front.panel-layout-twocol-footer #main-wrapper #main.content-indent {
+		width: 95%;
+	    min-width: 95%;
+		margin: 0 auto;
+		overflow: auto;
+	}
+}
+
+@media (min-width: 798px) {
+	.panel-twocol-66-33-footer .main-right{
+		width: calc(70% - 15px);
+		float: right;
+	}
+	.panel-twocol-66-33-footer .main-left{
+		width: calc(30% - 15px);
+		float: left;
+	}
+	.panel-twocol-66-33-footer .footer{
+		width: calc(100% - 15px);
+		float: left;
+	}
+}

@@ -1,0 +1,4 @@
+name = "PDF convertor"
+description = "convert a node to PDF file by phantomjs"
+core=7.x
+package = "rc"

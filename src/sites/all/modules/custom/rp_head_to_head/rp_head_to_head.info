@@ -1,0 +1,5 @@
+core = "7.x"
+description = "Head to Head."
+name = "Rp - Head to Head"
+package = Republish
+core = 7.x
